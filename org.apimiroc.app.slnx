@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/app/">
+    <Project Path="src/org.apimiroc.app/org.apimiroc.app.csproj" />
+  </Folder>
+  <Folder Name="/core/">
+    <Project Path="src/org.apimiroc.core.business/org.apimiroc.core.business.csproj" Id="1252c8bd-6d9e-49f4-9ab3-295778a0b829" />
+    <Project Path="src/org.apimiroc.core.config/org.apimiroc.core.config.csproj" Id="24f4d102-e155-424f-83ff-b1c3f876a3b1" />
+    <Project Path="src/org.apimiroc.core.data/org.apimiroc.core.data.csproj" Id="7e43a23a-1861-49c3-a2fb-eef20535a69a" />
+    <Project Path="src/org.apimiroc.core.entities/org.apimiroc.core.entities.csproj" Id="f938e2e0-cc42-47bd-a885-ed3ee4b779b7" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/org.apimiroc.app.test/org.apimiroc.app.test.csproj" Id="333a6b77-1ef5-497c-ba5c-cc4fd4f43a60" />
+  </Folder>
+</Solution>

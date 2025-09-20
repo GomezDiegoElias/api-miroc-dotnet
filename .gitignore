@@ -1,0 +1,56 @@
+# ===============================
+# Archivos de Visual Studio / Rider / JetBrains
+# ===============================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ===============================
+# Carpetas y binarios de compilación
+# ===============================
+**/bin/
+**/obj/
+**/out/
+
+# ===============================
+# Archivos de configuración de EF Core en tiempo de diseño
+# ===============================
+**/obj/**/*.EntityFrameworkCore.targets
+
+# ===============================
+# Configuración local de IIS Express y Kestrel
+# ===============================
+.vscode/
+*.local
+*.pidb
+*.sdf
+*.dbmdl
+*.opendb
+*.DS_Store
+
+# ===============================
+# User secrets (solo en desarrollo)
+# ===============================
+secrets.json
+*.usersecrets
+
+# ===============================
+# Node / Frontend (si tenés React o similares)
+# ===============================
+node_modules/
+dist/
+build/
+
+# ===============================
+# Log files
+# ===============================
+*.log
+
+# ===============================
+# IDE / editor temporary files
+# ===============================
+*.swp
+*.tmp
+*.bak
