@@ -22,12 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\" />
+    <Folder Include="Dto\General\" />
+    <Folder Include="Dto\Request\" />
     <Folder Include="Validations\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\org.apimiroc.core.business\org.apimiroc.core.business.csproj" />
     <ProjectReference Include="..\org.apimiroc.core.config\org.apimiroc.core.config.csproj" />
+    <ProjectReference Include="..\org.apimiroc.core.shared\org.apimiroc.core.shared.csproj" />
   </ItemGroup>
 
 </Project>

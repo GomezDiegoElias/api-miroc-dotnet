@@ -68,5 +68,12 @@ namespace org.apimiroc.core.entities.Entities
             RoleId = roleId;
         }
 
+        public static string GenerateId()
+        {
+            string timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmss");
+            string uuidPart = Guid.NewGuid().ToString().Split('-')[0];
+            return $"usr-{timestamp}-{uuidPart}";
+        }
+
     }
 }

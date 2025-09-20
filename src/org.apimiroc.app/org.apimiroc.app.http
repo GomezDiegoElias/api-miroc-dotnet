@@ -1,6 +1,17 @@
-@org.apimiroc.app_HostAddress = http://localhost:5163
+@local = http://localhost:5163
 
-GET {{org.apimiroc.app_HostAddress}}/weatherforecast/
+GET {{local}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{local}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "dni": 44745058,
+    "email": "micorreojunior@gmail.com",
+    "password": "123456",
+    "firstname": "Junior",
+    "lastname": "Gomez"
+}

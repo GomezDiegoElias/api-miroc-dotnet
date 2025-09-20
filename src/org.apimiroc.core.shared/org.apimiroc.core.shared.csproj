@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\org.apimiroc.core.data\org.apimiroc.core.data.csproj" />
-    <ProjectReference Include="..\org.apimiroc.core.entities\org.apimiroc.core.entities.csproj" />
-    <ProjectReference Include="..\org.apimiroc.core.shared\org.apimiroc.core.shared.csproj" />
   </ItemGroup>
 
 </Project>

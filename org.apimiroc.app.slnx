@@ -7,6 +7,7 @@
     <Project Path="src/org.apimiroc.core.config/org.apimiroc.core.config.csproj" Id="24f4d102-e155-424f-83ff-b1c3f876a3b1" />
     <Project Path="src/org.apimiroc.core.data/org.apimiroc.core.data.csproj" Id="7e43a23a-1861-49c3-a2fb-eef20535a69a" />
     <Project Path="src/org.apimiroc.core.entities/org.apimiroc.core.entities.csproj" Id="f938e2e0-cc42-47bd-a885-ed3ee4b779b7" />
+    <Project Path="src/org.apimiroc.core.shared/org.apimiroc.core.shared.csproj" Id="5c547fd4-a244-4dee-8251-5c05fabee1ca" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/org.apimiroc.app.test/org.apimiroc.app.test.csproj" Id="333a6b77-1ef5-497c-ba5c-cc4fd4f43a60" />
