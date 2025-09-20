@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.config
 {
@@ -31,14 +32,31 @@ namespace org.apimiroc.core.config
 
                         context.Response.StatusCode = statusCode;
 
-                        await context.Response.WriteAsJsonAsync(new
-                        {
-                            success = false,
-                            message = ex.Message,
-                            status = statusCode
-                        });
+                        var error = new ErrorDetails(statusCode, ex.Message, context.Request.Path, null); // ex.StackTrace
+
+                        var response = new StandardResponse<ErrorDetails>(false, "Ah ocurrido un error", null, error, statusCode);
+
+                        await context.Response.WriteAsJsonAsync(response);
+
                     }
                 });
+            });
+
+            // Capturar error de mal URL
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                if (context.Response.StatusCode == StatusCodes.Status404NotFound &&
+                    !context.Response.HasStarted)
+                {
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        StatusCode = 404,
+                        Message = $"La url {context.Request.Path} no existe."
+                    });
+                }
             });
 
             app.UseCors();

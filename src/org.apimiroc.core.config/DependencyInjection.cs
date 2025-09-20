@@ -27,6 +27,30 @@ namespace org.apimiroc.core.config
                 });
             });
 
+            services.AddAuthorization(options =>
+            {
+
+                var entities = new[] { "User" };
+                var actions = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
+
+                foreach (var entity in entities)
+                {
+                    foreach (var action in actions)
+                    {
+
+                        var permission = $"{action}_{entity}".ToUpper(); // ej: CREATE_CLIENT
+                        var policyName = $"Can{action}_{entity}"; // ej: CanCREATE_Client
+
+                        options.AddPolicy(policyName, policy => policy.RequireClaim("permission", permission));
+
+                    }
+                }
+
+            });
+
+            // Validadores
+            
+
             // Repositorios
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();

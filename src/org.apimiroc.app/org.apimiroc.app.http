@@ -1,6 +1,6 @@
 @local = http://localhost:5163
 
-GET {{local}}/weatherforecast/
+GET {{local}}/weatherforecassst/
 Accept: application/json
 
 ###

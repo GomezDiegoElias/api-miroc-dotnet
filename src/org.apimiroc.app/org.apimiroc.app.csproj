@@ -22,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\General\" />
     <Folder Include="Dto\Request\" />
-    <Folder Include="Validations\" />
   </ItemGroup>
 
   <ItemGroup>
