@@ -20,9 +20,9 @@ namespace org.apimiroc.core.business.Services
             return await _roleRepository.Save(role);
         }
 
-        public Task<List<Role>> GetAllRoles(bool includePermissions = false)
+        public async Task<List<Role>> GetAllRoles(bool includePermissions = false)
         {
-            throw new NotImplementedException();
+            return await _roleRepository.FindAll(includePermissions);
         }
 
         public async Task<Role> GetRoleByName(string name)
@@ -32,9 +32,9 @@ namespace org.apimiroc.core.business.Services
             return role;
         }
 
-        public Task<Role> UpdateRolePermissions(string roleName, IEnumerable<string> addPermissions, IEnumerable<string> removePermissions)
+        public async Task<Role> UpdateRolePermissions(string roleName, IEnumerable<string> addPermissions, IEnumerable<string> removePermissions)
         {
-            throw new NotImplementedException();
+            return await _roleRepository.UpdatePermissions(roleName, addPermissions, removePermissions);
         }
     }
 }

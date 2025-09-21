@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\Request\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\org.apimiroc.core.business\org.apimiroc.core.business.csproj" />
     <ProjectReference Include="..\org.apimiroc.core.config\org.apimiroc.core.config.csproj" />
     <ProjectReference Include="..\org.apimiroc.core.shared\org.apimiroc.core.shared.csproj" />

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using org.apimiroc.core.data;
-using org.apimiroc.core.shared.Sedders;
+using org.apimiroc.core.data.Sedders;
 
 namespace org.apimiroc.core.config
 {

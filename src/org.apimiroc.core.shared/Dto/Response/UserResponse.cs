@@ -1,4 +1,4 @@
-﻿namespace org.apimiroc.app.Dto.Response
+﻿namespace org.apimiroc.core.shared.Dto.Response
 {
     public record UserResponse(
         string Id,

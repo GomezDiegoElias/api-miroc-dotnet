@@ -15,3 +15,14 @@ Content-Type: application/json
     "firstname": "Junior",
     "lastname": "Gomez"
 }
+
+###
+
+PATCH {{local}}/api/v1/users/46924236
+Content-Type: application/json
+
+[
+  { "op": "replace", "path": "/firstName", "value": "Juan" },
+  { "op": "replace", "path": "/lastName", "value": "Pérez" },
+  { "op": "replace", "path": "/email", "value": "juan.perez@example.com" }
+]

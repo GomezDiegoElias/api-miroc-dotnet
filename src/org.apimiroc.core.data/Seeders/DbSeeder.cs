@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using org.apimiroc.core.data;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Utils;
 
-namespace org.apimiroc.core.shared.Sedders
+namespace org.apimiroc.core.data.Sedders
 {
     public static class DbSedder
     {

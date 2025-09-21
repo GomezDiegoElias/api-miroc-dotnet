@@ -15,6 +15,8 @@ namespace org.apimiroc.core.data
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
+        // metodos de paginaciones
+
         // Configuracion del modelo de datos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
