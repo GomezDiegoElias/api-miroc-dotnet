@@ -28,6 +28,7 @@ namespace org.apimiroc.core.config
                             UserNotFoundException => 404,
                             RoleNotFoundException => 404,
                             ClientNotFoundException => 404,
+                            EmployeeNotFoundException => 404,
                             _ => 500
                         };
 

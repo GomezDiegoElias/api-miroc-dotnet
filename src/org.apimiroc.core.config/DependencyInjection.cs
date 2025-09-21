@@ -55,6 +55,7 @@ namespace org.apimiroc.core.config
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             // Paginaciones
             services.AddScoped<IPaginationRepository, PaginationRepository>();
@@ -64,6 +65,7 @@ namespace org.apimiroc.core.config
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
 

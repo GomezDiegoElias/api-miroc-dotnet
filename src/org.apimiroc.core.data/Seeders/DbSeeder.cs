@@ -10,64 +10,69 @@ namespace org.apimiroc.core.data.Sedders
 
         public static async Task SeedRolesAndPermissions(AppDbContext context)
         {
-            if (!context.Roles.Any())
+            // Crear roles si no existen
+            var admin = await context.Roles.FirstOrDefaultAsync(r => r.Name == "ADMIN");
+            if (admin == null)
             {
-                var entities = new[] { "User", "Client" };
-                var actions = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
+                admin = new Role { Name = "ADMIN", RolePermissions = new List<RolePermission>() };
+                context.Roles.Add(admin);
+            }
 
-                var permissionsDict = new Dictionary<string, Permission>();
+            var presupuestista = await context.Roles.FirstOrDefaultAsync(r => r.Name == "PRESUPUESTISTA");
+            if (presupuestista == null)
+            {
+                presupuestista = new Role { Name = "PRESUPUESTISTA", RolePermissions = new List<RolePermission>() };
+                context.Roles.Add(presupuestista);
+            }
 
-                // Crear permisos y almacena en un diccionario para acceso rápido
-                // Crea todos los permisos posibles
-                foreach (var entity in entities)
+            await context.SaveChangesAsync();
+
+            // Definir entidades y acciones
+            var entities = new[] { "User", "Client", "Employee" };
+            var actions = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
+
+            foreach (var entity in entities)
+            {
+                foreach (var action in actions)
                 {
-                    foreach (var action in actions)
+                    var permName = $"{action}_{entity}".ToUpper();
+
+                    // Crear permiso si no existe
+                    var perm = await context.Permissions.FirstOrDefaultAsync(p => p.Name == permName);
+                    if (perm == null)
                     {
-                        var permName = $"{action}_{entity}".ToUpper(); // Ej: CREATE_CLIENT
-                        var perm = new Permission { Name = permName };
-                        context.Permissions.Add(perm); // Agrega a la base de datos
-                        permissionsDict[permName] = perm;
+                        perm = new Permission { Name = permName };
+                        context.Permissions.Add(perm);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Asignar al rol ADMIN si no lo tiene
+                    if (!context.RolePermissions.Any(rp => rp.RoleId == admin.Id && rp.PermissionId == perm.Id))
+                    {
+                        context.RolePermissions.Add(new RolePermission
+                        {
+                            RoleId = admin.Id,
+                            PermissionId = perm.Id
+                        });
+                    }
+
+                    // Asignar algunos al PRESUPUESTISTA
+                    var permisosPresupuestista = new[] { "READ_CLIENT", "CREATE_CLIENT" };
+                    if (permisosPresupuestista.Contains(permName)
+                        && !context.RolePermissions.Any(rp => rp.RoleId == presupuestista.Id && rp.PermissionId == perm.Id))
+                    {
+                        context.RolePermissions.Add(new RolePermission
+                        {
+                            RoleId = presupuestista.Id,
+                            PermissionId = perm.Id
+                        });
                     }
                 }
-
-                // Crear roles y asignar permisos
-                var admin = new Role
-                {
-                    Name = "ADMIN",
-                    RolePermissions = new List<RolePermission>()
-                };
-
-                // Permisos para ADMIN (todos los permisos)
-                foreach (var perm in permissionsDict.Values)
-                {
-                    admin.RolePermissions.Add(new RolePermission
-                    {
-                        Role = admin,          // FK con RoleEntity
-                        Permission = perm      // FK con PermissionEntity
-                    });
-                }
-
-                var presupuestista = new Role
-                {
-                    Name = "PRESUPUESTISTA",
-                    RolePermissions = new List<RolePermission>()
-                };
-
-                // Permisos específicos para PRESUPUESTISTA
-                var permisosPresupuestista = new[] { "READ_CLIENT", "CREATE_CLIENT", };
-                foreach (var permName in permisosPresupuestista)
-                {
-                    presupuestista.RolePermissions.Add(new RolePermission
-                    {
-                        Role = presupuestista,
-                        Permission = permissionsDict[permName]
-                    });
-                }
-
-                context.Roles.AddRange(admin, presupuestista);
-                await context.SaveChangesAsync();
             }
+
+            await context.SaveChangesAsync();
         }
+
 
 
         public static async Task SeedUserWhitDiferentRoles(AppDbContext context)

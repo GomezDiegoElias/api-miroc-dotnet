@@ -42,5 +42,19 @@ app.UseSwaggerDocumentation();
 // Migraciones de D
 DatabaseConfig.MigrateDatabase(app.Services);
 
+app.MapGet("/", () =>
+{
+
+    var currentTime = DateTime.Now.ToString("HH:mm:ss");
+
+    return Results.Ok(new
+    {
+        message = "¡API Funcionando!",
+        time = currentTime,
+        status = true
+    });
+
+}).RequireRateLimiting("fijo");
+
 app.MapControllers().RequireRateLimiting("fijo");
 app.Run();
