@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.General;
+using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
 namespace org.apimiroc.app.Controllers
@@ -34,9 +35,28 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<object>(
                 true,
                 includePermissions ? "Roles con permisos" : "Roles (solo nombres)",
-                data,
-                null,
-                200
+                data
+            ));
+
+        }
+
+        [AllowAnonymous]
+        [HttpPatch("{roleName}/permissions")]
+        public async Task<IActionResult> UpdateRolePermissions(
+            string roleName,
+            [FromBody] UpdateRolePermissionsRequest request
+        )
+        {
+
+            var updatedRole = await _roleService.UpdateRolePermissions(
+                roleName,
+                request.AddPermissions ?? new string[0],
+                request.RemovePermissions ?? new string[0]
+            );
+
+            return Ok(new StandardResponse<string>(
+                Success: true,
+                Message: $"Permisos del rol '{roleName}' actualizados correctamente."
             ));
 
         }

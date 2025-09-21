@@ -22,6 +22,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<LoginValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserUpdateValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserCreateValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<ClientValidation>();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSwaggerDocumentation();

@@ -54,15 +54,16 @@ namespace org.apimiroc.core.config
             // Repositorios
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
 
             // Paginaciones
             services.AddScoped<IPaginationRepository, PaginationRepository>();
-
 
             // Servicios
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IClientService, ClientService>();
 
             return services;
 

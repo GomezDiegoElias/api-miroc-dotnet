@@ -137,6 +137,7 @@ namespace org.apimiroc.core.data.Repositories
             if (roleEntity == null) throw new RoleNotFoundException(user.Role.Name);
 
             existingUser.RoleId = roleEntity.Id;
+            existingUser.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
 

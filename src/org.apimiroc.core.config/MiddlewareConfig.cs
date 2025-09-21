@@ -27,6 +27,7 @@ namespace org.apimiroc.core.config
                             ApplicationException => 400,
                             UserNotFoundException => 404,
                             RoleNotFoundException => 404,
+                            ClientNotFoundException => 404,
                             _ => 500
                         };
 
