@@ -46,7 +46,7 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        // id, cuit, first_name, address
+        // cuit, first_name, address
 
         public async Task<PaginatedResponse<Provider>> FindAll(int pageIndex, int pageSize)
         {
@@ -54,7 +54,6 @@ namespace org.apimiroc.core.data.Repositories
                 "getProviderPagination",
                 reader => new Provider
                 {
-                    Id = reader["id"].ToString() ?? string.Empty,
                     Cuit = Convert.ToInt64(reader["cuit"]),
                     FirstName = reader["first_name"].ToString() ?? string.Empty,
                     Address = reader["address"].ToString() ?? string.Empty,
