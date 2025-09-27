@@ -18,6 +18,27 @@ namespace org.apimiroc.core.data.Repositories
             _paginationRepository = paginationRepository;
         }
 
+        public async Task<Client?> FindByDni(long dni)
+        {
+            return await _context.Clients.FirstOrDefaultAsync(x => x.Dni == dni);
+        }
+
+        public async Task<PaginatedResponse<Client>> FindAll(int pageIndex, int pageSize)
+        {
+            return await _paginationRepository.ExecutePaginationAsync(
+                "getClientPagination",
+                reader => new Client
+                {
+                    Id = reader["id"].ToString() ?? string.Empty,
+                    Dni = Convert.ToInt64(reader["dni"]),
+                    FirstName = reader["first_name"].ToString() ?? string.Empty,
+                    Address = reader["address"].ToString() ?? string.Empty
+                },
+                pageIndex,
+                pageSize
+            );
+        }
+
         public async Task<Client> DeleteLogic(long dni)
         {
 
@@ -43,29 +64,6 @@ namespace org.apimiroc.core.data.Repositories
 
             return entity;
 
-        }
-
-        // id, dni, first_name, address
-
-        public async Task<PaginatedResponse<Client>> FindAll(int pageIndex, int pageSize)
-        {
-            return await _paginationRepository.ExecutePaginationAsync(
-                "getClientPagination",
-                reader => new Client
-                {
-                    Id = reader["id"].ToString() ?? string.Empty,
-                    Dni = Convert.ToInt64(reader["dni"]),
-                    FirstName = reader["first_name"].ToString() ?? string.Empty,
-                    Address = reader["address"].ToString() ?? string.Empty
-                },
-                pageIndex,
-                pageSize
-            );
-        }
-
-        public async Task<Client?> FindByDni(long dni)
-        {
-            return await _context.Clients.FirstOrDefaultAsync(x => x.Dni == dni);
         }
 
         public async Task<Client> Save(Client client)
