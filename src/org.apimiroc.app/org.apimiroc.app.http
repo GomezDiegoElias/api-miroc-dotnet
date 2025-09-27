@@ -26,3 +26,61 @@ Content-Type: application/json
   { "op": "replace", "path": "/lastName", "value": "Pérez" },
   { "op": "replace", "path": "/email", "value": "juan.perez@example.com" }
 ]
+
+### Obtener todos los proveedores
+GET {{local}}/api/v1/providers
+Accept: application/json
+
+###
+
+### Obtener proveedor por CUIT
+GET {{local}}/api/v1/providers/12345678901
+Accept: application/json
+
+###
+
+### Crear proveedor
+POST {{local}}/api/v1/providers
+Content-Type: application/json
+
+{
+    "cuit": 12345678901,
+    "name": "Proveedor Ejemplo",
+    "address": "Calle Falsa 123",
+    "description": "Proveedor de prueba"
+}
+
+###
+
+### Actualizar proveedor
+PUT {{local}}/api/v1/providers/12345678901
+Content-Type: application/json
+
+{
+    "cuit": 12345678901,
+    "name": "Proveedor Actualizado",
+    "address": "Calle Real 456",
+    "description": "Proveedor actualizado"
+}
+
+###
+
+### Eliminar proveedor permanentemente
+DELETE {{local}}/api/v1/providers/permanent/12345678901
+Accept: application/json
+
+###
+
+### Eliminar proveedor lógicamente
+DELETE {{local}}/api/v1/providers/12345678901
+Accept: application/json
+
+###
+
+### Actualización parcial (PATCH)
+PATCH {{local}}/api/v1/providers/12345678901
+Content-Type: application/json-patch+json
+
+[
+  { "op": "replace", "path": "/name", "value": "Nuevo Nombre" }
+]
