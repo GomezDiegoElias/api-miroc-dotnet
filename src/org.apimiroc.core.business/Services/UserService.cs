@@ -81,14 +81,14 @@ namespace org.apimiroc.core.business.Services
 
         }
 
-        public Task<User> Update(User user)
+        public Task<User> Update(User user, long dniOld)
         {
-            return _userRepository.Update(user);
+            return _userRepository.Update(user, dniOld);
         }
 
-        public Task<User> UpdatePartial(User user)
+        public Task<User> UpdatePartial(User user, long dniOld)
         {
-            return _userRepository.UpdatePartial(user);
+            return _userRepository.UpdatePartial(user, dniOld);
         }
     }
 }

@@ -125,7 +125,7 @@ namespace org.apimiroc.app.Controllers
 
             var employeeToUpdate = EmployeeMapper.ToEntityForUpdate(request, existingClient!);
 
-            var updatedEmployee = await _employeeService.Update(employeeToUpdate);
+            var updatedEmployee = await _employeeService.Update(employeeToUpdate, dni);
             var response = EmployeeMapper.ToResponse(updatedEmployee);
 
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado actualizado exitosamente", response));
@@ -161,7 +161,7 @@ namespace org.apimiroc.app.Controllers
 
             var employee = EmployeeMapper.ToEntityForPatch(employeeToPatch, existingEmployee!);
 
-            var updatedEmployee = await _employeeService.UpdatePartial(employee);
+            var updatedEmployee = await _employeeService.UpdatePartial(employee, dni);
 
             var response = EmployeeMapper.ToResponse(updatedEmployee);
 

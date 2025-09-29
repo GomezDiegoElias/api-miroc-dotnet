@@ -62,10 +62,10 @@ namespace org.apimiroc.core.data.Repositories
             return employee;
         }
 
-        public async Task<Employee> Update(Employee employee)
+        public async Task<Employee> Update(Employee employee, long dniOld)
         {
             
-            var employeeToUpdate = await FindByDni(employee.Dni);
+            var employeeToUpdate = await FindByDni(dniOld);
 
             employeeToUpdate!.Dni = employee.Dni;
             employeeToUpdate.FirstName = employee.FirstName;
@@ -78,10 +78,10 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<Employee> UpdatePartial(Employee employee)
+        public async Task<Employee> UpdatePartial(Employee employee, long dniOld)
         {
 
-            var employeeToUpdate = await FindByDni(employee.Dni);
+            var employeeToUpdate = await FindByDni(dniOld);
 
             employeeToUpdate!.Dni = employee.Dni;
             employeeToUpdate.FirstName = employee.FirstName;

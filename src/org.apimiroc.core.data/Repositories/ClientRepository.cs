@@ -73,10 +73,10 @@ namespace org.apimiroc.core.data.Repositories
             return client;
         }
 
-        public async Task<Client> Update(Client client)
+        public async Task<Client> Update(Client client, long dniOld)
         {
-            var existingEntity = await FindByDni(client.Dni)
-                ?? throw new ClientNotFoundException(client.Dni.ToString());
+            var existingEntity = await FindByDni(dniOld)
+                ?? throw new ClientNotFoundException(dniOld.ToString());
 
             // Actualizar solo los campos necesarios
             existingEntity.Dni = client.Dni;
@@ -88,11 +88,11 @@ namespace org.apimiroc.core.data.Repositories
             return existingEntity;
         }
 
-        public async Task<Client> UpdatePartial(Client client)
+        public async Task<Client> UpdatePartial(Client client, long dniOld)
         {
 
-            var existingEntity = await FindByDni(client.Dni)
-                ?? throw new ClientNotFoundException(client.Dni.ToString());
+            var existingEntity = await FindByDni(dniOld)
+                ?? throw new ClientNotFoundException(dniOld.ToString());
 
             existingEntity.Dni = client.Dni;
             existingEntity.FirstName = client.FirstName;

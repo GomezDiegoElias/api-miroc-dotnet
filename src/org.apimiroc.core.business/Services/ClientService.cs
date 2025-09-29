@@ -57,14 +57,14 @@ namespace org.apimiroc.core.business.Services
 
         }
 
-        public async Task<Client> Update(Client client)
+        public async Task<Client> Update(Client client, long dniOld)
         {
-            return await _clientRepository.Update(client);
+            return await _clientRepository.Update(client, dniOld);
         }
 
-        public async Task<Client> UpdatePartial(Client client)
+        public async Task<Client> UpdatePartial(Client client, long dniOld)
         {
-            return await _clientRepository.UpdatePartial(client);
+            return await _clientRepository.UpdatePartial(client, dniOld);
         }
     }
 }

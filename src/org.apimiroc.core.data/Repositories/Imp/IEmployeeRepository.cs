@@ -10,8 +10,8 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<PaginatedResponse<Employee>> FindAll(int pageIndex, int pageSize);
         public Task<Employee?> FindByDni(long dni);
         public Task<Employee> Save(Employee employee);
-        public Task<Employee> Update(Employee employee);
-        public Task<Employee> UpdatePartial(Employee employee);
+        public Task<Employee> Update(Employee employee, long dniOld);
+        public Task<Employee> UpdatePartial(Employee employee, long dniOld);
         public Task<Employee> DeletePermanent(long dni);
         public Task<Employee> DeleteLogic(long dni);
     }

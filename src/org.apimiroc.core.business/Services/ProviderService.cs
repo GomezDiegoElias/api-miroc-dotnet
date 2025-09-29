@@ -58,14 +58,14 @@ namespace org.apimiroc.core.business.Services
 
         }
 
-        public async Task<Provider> Update(Provider provider)
+        public async Task<Provider> Update(Provider provider, long cuitLong)
         {
-            return await _providerRepository.Update(provider);
+            return await _providerRepository.Update(provider, cuitLong);
         }
 
-        public async Task<Provider> UpdatePartial(Provider provider)
+        public async Task<Provider> UpdatePartial(Provider provider, long cuitLong)
         {
-            return await _providerRepository.UpdatePartial(provider);
+            return await _providerRepository.UpdatePartial(provider, cuitLong);
         }
     }
 }

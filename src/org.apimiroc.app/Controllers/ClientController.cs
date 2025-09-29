@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -132,7 +133,7 @@ namespace org.apimiroc.app.Controllers
 
             var clientToUpdate = ClientMapper.ToEntityForUpdate(request, existingClient!);
 
-            var updatedClient = await _clientService.Update(clientToUpdate);
+            var updatedClient = await _clientService.Update(clientToUpdate, dni);
             var response = ClientMapper.ToResponse(updatedClient);
 
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente actualizado exitosamente", response));
@@ -166,9 +167,17 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
+            var validationResult = await _clientValidation.ValidateAsync(clientToPatch);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
+                return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
+            }
+
             var client = ClientMapper.ToEntityForPatch(clientToPatch, existingClient!);
 
-            var updatedClient = await _clientService.UpdatePartial(client);
+            var updatedClient = await _clientService.UpdatePartial(client, dni);
 
             var response = ClientMapper.ToResponse(updatedClient);
 

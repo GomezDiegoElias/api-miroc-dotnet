@@ -11,7 +11,7 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<User> SaveCustomUser(UserCreateRequest request);
         public Task<User> DeletePermanent(long dni);
         public Task<User> DeleteLogic(long dni);
-        public Task<User> Update(User user);
-        public Task<User> UpdatePartial(User user);
+        public Task<User> Update(User user, long dniOld);
+        public Task<User> UpdatePartial(User user, long dniOld);
     }
 }

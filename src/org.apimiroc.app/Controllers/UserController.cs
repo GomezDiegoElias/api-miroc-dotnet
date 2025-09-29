@@ -122,7 +122,7 @@ namespace org.apimiroc.app.Controllers
 
             var userToUpdate = UserMapper.ToEntityForUpdate(request, existingUser);
 
-            var updatedUser = await _userService.Update(userToUpdate);
+            var updatedUser = await _userService.Update(userToUpdate, dni);
             var response = UserMapper.ToResponse(updatedUser);
 
             return Ok(new StandardResponse<UserResponse>(
@@ -161,19 +161,19 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
-            //var validationResult = await _userUpdateValidator.ValidateAsync(userToPatch);
-            //if (!validationResult.IsValid)
-            //{
-            //    var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-            //    var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-            //    return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
-            //}
+            var validationResult = await _userUpdateValidator.ValidateAsync(userToPatch);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
+                return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
+            }
 
             // Usa el mapper especifico para PATCH
             var userDomain = UserMapper.ToEntityForPatch(userToPatch, existingUser);
 
             // Guarda los cambios
-            var updatedUser = await _userService.UpdatePartial(userDomain);
+            var updatedUser = await _userService.UpdatePartial(userDomain, dni);
 
             // Mapea a response DTO
             var response = UserMapper.ToResponse(updatedUser);

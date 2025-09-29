@@ -54,14 +54,14 @@ namespace org.apimiroc.core.business.Services
             return saveEmployee;
         }
 
-        public async Task<Employee> Update(Employee employee)
+        public async Task<Employee> Update(Employee employee, long dniOld)
         {
-            return await _employeeRepository.Update(employee);
+            return await _employeeRepository.Update(employee, dniOld);
         }
 
-        public async Task<Employee> UpdatePartial(Employee employee)
+        public async Task<Employee> UpdatePartial(Employee employee, long dniOld)
         {
-            return await _employeeRepository.UpdatePartial(employee);
+            return await _employeeRepository.UpdatePartial(employee, dniOld);
         }
     }
 }

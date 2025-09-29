@@ -19,12 +19,12 @@ namespace org.apimiroc.app.Mappers
 
         public static Provider ToEntityForUpdate(ProviderRequest request, Provider provider)
         {
-            return new Provider(provider.Id,provider.Cuit, request.FirstName, request.Address, request.Description);
+            return new Provider(provider.Id, request.Cuit, request.FirstName, request.Address, request.Description);
         }
 
         public static Provider ToEntityForPatch(ProviderRequest request, Provider provider)
         {
-            return new Provider(provider.Id, provider.Cuit, request.FirstName, request.Address, request.Description);
+            return new Provider(provider.Id, request.Cuit, request.FirstName, request.Address, request.Description);
         }
 
     }

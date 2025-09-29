@@ -1,15 +1,14 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
-using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace org.apimiroc.app.Controllers
 {
@@ -132,7 +131,7 @@ namespace org.apimiroc.app.Controllers
 
             var providerToUpdate = ProviderMapper.ToEntityForUpdate(request, existingProvider!);
 
-            var updatedProvider = await _providerService.Update(providerToUpdate);
+            var updatedProvider = await _providerService.Update(providerToUpdate, cuit);
             var response = ProviderMapper.ToResponse(updatedProvider);
 
             return Ok(new StandardResponse<ProviderResponse>(true, "Proveedor actualizado exitosamente", response));
@@ -166,9 +165,18 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<ProviderResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
+            var validationResult = await _providerValidation.ValidateAsync(providerToPatch);
+
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
+                return new StandardResponse<ProviderResponse>(false, "Ah ocurrido un error", null, errors, 400);
+            }
+
             var provider = ProviderMapper.ToEntityForPatch(providerToPatch, existingProvider!);
 
-            var updatedProvider = await _providerService.UpdatePartial(provider);
+            var updatedProvider = await _providerService.UpdatePartial(provider, cuit);
 
             var response = ProviderMapper.ToResponse(updatedProvider);
 

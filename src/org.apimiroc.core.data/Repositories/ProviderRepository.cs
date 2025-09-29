@@ -64,7 +64,7 @@ namespace org.apimiroc.core.data.Repositories
             );
         }
 
-        public async Task<Provider> FindByCuit(long cuit)
+        public async Task<Provider?> FindByCuit(long cuit)
         {
             return await _context.Providers.FirstOrDefaultAsync(x => x.Cuit == cuit);
         }
@@ -76,33 +76,33 @@ namespace org.apimiroc.core.data.Repositories
             return provider;
         }
 
-        public async Task<Provider> Update(Provider provider)
+        public async Task<Provider> Update(Provider provider, long cuitOld)
         {
-            var existingEntity = await FindByCuit(provider.Cuit)
-                ?? throw new ProviderNotFoundException(provider.Cuit.ToString());
+            var existingEntity = await FindByCuit(cuitOld)
+                ?? throw new ProviderNotFoundException(cuitOld.ToString());
 
             // Actualizar solo los campos necesarios
             existingEntity.Cuit = provider.Cuit;
             existingEntity.FirstName = provider.FirstName;
             existingEntity.Address = provider.Address;
-            existingEntity.UpdatedAt = DateTime.Now;
             existingEntity.Description = provider.Description;
+            existingEntity.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return existingEntity;
         }
 
-        public async Task<Provider> UpdatePartial(Provider provider)
+        public async Task<Provider> UpdatePartial(Provider provider, long cuitOld)
         {
 
-            var existingEntity = await FindByCuit(provider.Cuit)
-                ?? throw new ProviderNotFoundException(provider.Cuit.ToString());
+            var existingEntity = await FindByCuit(cuitOld)
+                ?? throw new ProviderNotFoundException(cuitOld.ToString());
 
             existingEntity.Cuit = provider.Cuit;
             existingEntity.FirstName = provider.FirstName;
             existingEntity.Address = provider.Address;
-            existingEntity.UpdatedAt = DateTime.Now; 
             existingEntity.Description = provider.Description;
+            existingEntity.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
 

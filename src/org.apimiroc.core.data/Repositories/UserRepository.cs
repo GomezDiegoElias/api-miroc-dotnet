@@ -110,16 +110,16 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<User> Update(User user)
+        public async Task<User> Update(User user, long dniOld)
         {
 
             var existingUser = await _context.Users
                 .Include(u => u.Role)
                 .ThenInclude(r => r.RolePermissions)
                 .ThenInclude(rp => rp.Permission)
-                .FirstOrDefaultAsync(u => u.Dni == user.Dni);
+                .FirstOrDefaultAsync(u => u.Dni == dniOld);
 
-            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {user.Dni} no existe");
+            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {dniOld} no existe");
 
             // Actualiza los campos del usuario existente
             existingUser.Dni = user.Dni;
@@ -145,19 +145,19 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<User> UpdatePartial(User user)
+        public async Task<User> UpdatePartial(User user, long dniOld)
         {
 
             var existingUser = await _context.Users
                 .Include(u => u.Role)
                 .ThenInclude(r => r.RolePermissions)
                 .ThenInclude(rp => rp.Permission)
-                .FirstOrDefaultAsync(u => u.Dni == user.Dni);
+                .FirstOrDefaultAsync(u => u.Dni == dniOld);
 
-            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {user.Dni} no existe");
+            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {dniOld} no existe");
 
             // Actualiza solo los campos que no son nulos en el objeto user
-            existingUser.Dni = existingUser.Dni;
+            existingUser.Dni = user.Dni;
             existingUser.Email = user.Email;
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
