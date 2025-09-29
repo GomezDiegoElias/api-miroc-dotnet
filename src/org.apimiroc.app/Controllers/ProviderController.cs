@@ -101,7 +101,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("{Cuit:long}")]
+        [HttpDelete("{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderRequest>>> DeleteProviderLogic(long cuit)
         {
             var existingProvider = await _providerService.FindByCuit(cuit);
