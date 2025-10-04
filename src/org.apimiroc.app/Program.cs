@@ -33,8 +33,8 @@ var app = builder.Build();
 // Middleware
 app.UseGlobalMiddlewares();
 
-// Seeder
-//await DbSeederConfig.SeedAsync(app);
+ // Seeder
+await DbSeederConfig.SeedAsync(app);
 
 // Swagger UI
 app.UseSwaggerDocumentation();
