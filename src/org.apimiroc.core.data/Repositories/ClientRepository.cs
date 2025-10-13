@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -23,20 +24,31 @@ namespace org.apimiroc.core.data.Repositories
             return await _context.Clients.FirstOrDefaultAsync(x => x.Dni == dni);
         }
 
-        public async Task<PaginatedResponse<Client>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<Client>> FindAll(ClientFilter filters)
         {
+            
+            // Parametros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "Q", filters.Q  },
+                { "FDni", filters.FDni },
+                { "FFirstName", filters.FFirstName },
+                { "FAddress", filters.FAddress }  
+            };
+
             return await _paginationRepository.ExecutePaginationAsync(
-                "getClientPagination",
-                reader => new Client
+                storedProcedure: "getClientPaginationAdvanced",
+                map: reader => new Client
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
                     Dni = Convert.ToInt64(reader["dni"]),
                     FirstName = reader["first_name"].ToString() ?? string.Empty,
                     Address = reader["address"].ToString() ?? string.Empty
                 },
-                pageIndex,
-                pageSize
+                filter: filters,
+                extraParams: extraParams
             );
+
         }
 
         public async Task<Client> DeleteLogic(long dni)

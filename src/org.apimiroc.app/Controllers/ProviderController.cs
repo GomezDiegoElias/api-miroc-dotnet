@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -31,13 +32,10 @@ namespace org.apimiroc.app.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<PaginatedResponse<ProviderResponse>>>> FindAllProviders(
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 5
-        )
+        public async Task<ActionResult<StandardResponse<PaginatedResponse<ProviderResponse>>>> FindAllProviders([FromQuery] ProviderFilter filters)
         {
 
-            var providers = await _providerService.FindAll(pageIndex, pageSize);
+            var providers = await _providerService.FindAll(filters);
             var providerResponse = providers.Items.Select(c => ProviderMapper.ToResponse(c)).ToList();
 
             var paginatedResponse = new PaginatedResponse<ProviderResponse>

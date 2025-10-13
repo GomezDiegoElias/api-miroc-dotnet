@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -48,20 +49,32 @@ namespace org.apimiroc.core.data.Repositories
 
         // cuit, first_name, address
 
-        public async Task<PaginatedResponse<Provider>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<Provider>> FindAll(ProviderFilter filters)
         {
+
+            // Parametros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "@Q", filters.Q },
+                { "@FCuit", filters.FCuit },
+                { "@FFirstName", filters.FFirstName },
+                { "@FAddress", filters.FAddress }
+            };
+
             return await _paginationRepository.ExecutePaginationAsync(
-                "getProviderPagination",
-                reader => new Provider
+                storedProcedure: "getProviderPaginationAdvanced",
+                map: reader => new Provider
                 {
+                    Id = reader["id"].ToString() ?? string.Empty,
                     Cuit = Convert.ToInt64(reader["cuit"]),
                     FirstName = reader["first_name"].ToString() ?? string.Empty,
                     Address = reader["address"].ToString() ?? string.Empty,
-                    Description = reader["description"].ToString() ?? string.Empty
+                    Description = reader["description"].ToString() ?? string.Empty,
                 },
-                pageIndex,
-                pageSize
+                filter: filters,
+                extraParams: extraParams
             );
+
         }
 
         public async Task<Provider?> FindByCuit(long cuit)

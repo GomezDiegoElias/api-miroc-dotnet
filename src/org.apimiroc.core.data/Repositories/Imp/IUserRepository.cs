@@ -1,11 +1,12 @@
 ﻿using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories.Imp
 {
     public interface IUserRepository
     {
-        public Task<PaginatedResponse<User>> FindAll(int pageIndex, int pageSize);
+        public Task<PaginatedResponse<User>> FindAll(UserFilter filters);
         public Task<User?> FindByDni(long dni);
         public Task<User> Save(User user);
         public Task<User?> FindByEmail(string email);

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -33,13 +34,10 @@ namespace org.apimiroc.app.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<PaginatedResponse<ClientResponse>>>> FindAllClients(
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 5
-        )
+        public async Task<ActionResult<StandardResponse<PaginatedResponse<ClientResponse>>>> FindAllClients([FromQuery] ClientFilter filters)
         {
 
-            var clients = await _clientService.FindAll(pageIndex, pageSize);
+            var clients = await _clientService.FindAll(filters);
             var clientResponse = clients.Items.Select(c => ClientMapper.ToResponse(c)).ToList();
 
             var paginatedResponse = new PaginatedResponse<ClientResponse>

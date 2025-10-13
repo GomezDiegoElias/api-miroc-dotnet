@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories.Imp
@@ -8,8 +9,7 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<PaginatedResponse<T>> ExecutePaginationAsync<T>(
             string storedProcedure,
             Func<SqlDataReader, T> map,
-            int pageIndex,
-            int pageSize,
+            PaginationFilter filter,
             Dictionary<string, object>? extraParams = null
         );
     }

@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 
@@ -29,9 +30,9 @@ namespace org.apimiroc.core.business.Services
             return await _employeeRepository.DeletePermanent(employee!.Dni);
         }
 
-        public async Task<PaginatedResponse<Employee>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<Employee>> FindAll(EmployeeFilter filters)
         {
-            return await _employeeRepository.FindAll(pageIndex, pageSize);
+            return await _employeeRepository.FindAll(filters);
         }
 
         public async Task<Employee?> FindByDni(long dni)

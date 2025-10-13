@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -56,11 +57,21 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<PaginatedResponse<User>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<User>> FindAll(UserFilter filter)
         {
+            // Parámetros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "@Q", filter.Q },
+                { "@FDni", filter.FDni },
+                { "@FEmail", filter.FEmail },
+                { "@FFirstName", filter.FFirstName },
+                { "@FLastName", filter.FLastName }
+            };
+
             return await _paginationRepository.ExecutePaginationAsync(
-                "getUserPagination",
-                reader => new User
+                storedProcedure: "getUserPaginationAdvanced",
+                map:reader => new User
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
                     Dni = Convert.ToInt64(reader["dni"]),
@@ -70,10 +81,11 @@ namespace org.apimiroc.core.data.Repositories
                     Role = new Role(reader["role"].ToString() ?? string.Empty, Enumerable.Empty<string>()),
                     Status = Enum.Parse<Status>(reader["status"].ToString() ?? string.Empty)
                 },
-                pageIndex,
-                pageSize
+                filter: filter,
+                extraParams: extraParams
             );
         }
+
 
         public async Task<User?> FindByDni(long dni)
         {

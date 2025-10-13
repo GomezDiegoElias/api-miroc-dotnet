@@ -7,6 +7,7 @@ using org.apimiroc.app.Mappers;
 using org.apimiroc.app.Validations;
 using org.apimiroc.core.business.Services;
 using org.apimiroc.core.business.Services.Imp;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -32,13 +33,10 @@ namespace org.apimiroc.app.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindAllEmployees (
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 10
-        )
+        public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindAllEmployees([FromQuery] EmployeeFilter filters)
         {
 
-            var employees = await _employeeService.FindAll(pageIndex, pageSize);
+            var employees = await _employeeService.FindAll(filters);
             var employeeResponse = employees.Items.Select(e => EmployeeMapper.ToResponse(e)).ToList();
 
             var paginatedResponse = new PaginatedResponse<EmployeeResponse>

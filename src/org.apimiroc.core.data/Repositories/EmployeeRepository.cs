@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -34,20 +35,33 @@ namespace org.apimiroc.core.data.Repositories
             return existingEntity!;
         }
 
-        public async Task<PaginatedResponse<Employee>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<Employee>> FindAll(EmployeeFilter filters)
         {
+
+            // Parametros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "@Q", filters.Q  },
+                { "@FDni", filters.FDni },
+                { "@FFirstName", filters.FFirstName },
+                { "@FLastName", filters.FLastName },
+                { "@FWorkStation", filters.FWorkStation }
+            };
+
             return await _paginationRepository.ExecutePaginationAsync(
-                "getEmployeePagination",
-                reader => new Employee
+                storedProcedure: "getEmployeePaginationAdvanced",
+                map: reader => new Employee
                 {
+                    Id = reader["id"].ToString() ?? string.Empty,
                     Dni = Convert.ToInt64(reader["dni"]),
                     FirstName = reader["first_name"].ToString() ?? string.Empty,
                     LastName = reader["last_name"].ToString() ?? string.Empty,
-                    WorkStation = reader["workstation"].ToString() ?? string.Empty
+                    WorkStation = reader["workstation"].ToString() ?? string.Empty,
                 },
-                pageIndex,
-                pageSize
+                filter: filters,
+                extraParams: extraParams
             );
+
         }
 
         public async Task<Employee?> FindByDni(long dni)
