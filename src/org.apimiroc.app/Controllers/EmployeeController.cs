@@ -7,6 +7,7 @@ using org.apimiroc.app.Mappers;
 using org.apimiroc.app.Validations;
 using org.apimiroc.core.business.Services;
 using org.apimiroc.core.business.Services.Imp;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -32,13 +33,10 @@ namespace org.apimiroc.app.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindAllEmployees (
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 10
-        )
+        public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindAllEmployees([FromQuery] EmployeeFilter filters)
         {
 
-            var employees = await _employeeService.FindAll(pageIndex, pageSize);
+            var employees = await _employeeService.FindAll(filters);
             var employeeResponse = employees.Items.Select(e => EmployeeMapper.ToResponse(e)).ToList();
 
             var paginatedResponse = new PaginatedResponse<EmployeeResponse>
@@ -125,7 +123,7 @@ namespace org.apimiroc.app.Controllers
 
             var employeeToUpdate = EmployeeMapper.ToEntityForUpdate(request, existingClient!);
 
-            var updatedEmployee = await _employeeService.Update(employeeToUpdate);
+            var updatedEmployee = await _employeeService.Update(employeeToUpdate, dni);
             var response = EmployeeMapper.ToResponse(updatedEmployee);
 
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado actualizado exitosamente", response));
@@ -161,7 +159,7 @@ namespace org.apimiroc.app.Controllers
 
             var employee = EmployeeMapper.ToEntityForPatch(employeeToPatch, existingEmployee!);
 
-            var updatedEmployee = await _employeeService.UpdatePartial(employee);
+            var updatedEmployee = await _employeeService.UpdatePartial(employee, dni);
 
             var response = EmployeeMapper.ToResponse(updatedEmployee);
 

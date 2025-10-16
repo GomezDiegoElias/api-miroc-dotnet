@@ -29,12 +29,13 @@ namespace org.apimiroc.core.config
                             RoleNotFoundException => 404,
                             ClientNotFoundException => 404,
                             EmployeeNotFoundException => 404,
+                            ProviderNotFoundException => 404,
                             _ => 500
                         };
 
                         context.Response.StatusCode = statusCode;
 
-                        var error = new ErrorDetails(statusCode, ex.Message, context.Request.Path, null); // ex.StackTrace
+                        var error = new ErrorDetails(statusCode, ex.Message, context.Request.Path, ex.StackTrace); // ex.StackTrace
 
                         var response = new StandardResponse<ErrorDetails>(false, "Ah ocurrido un error", null, error, statusCode);
 

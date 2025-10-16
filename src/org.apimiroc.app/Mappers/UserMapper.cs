@@ -11,7 +11,6 @@ namespace org.apimiroc.app.Mappers
         public static UserResponse ToResponse(User user)
         {
             return new UserResponse(
-                    user.Id,
                     user.Dni,
                     user.Email,
                     user.FirstName,

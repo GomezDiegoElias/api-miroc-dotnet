@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 
@@ -27,9 +28,9 @@ namespace org.apimiroc.core.business.Services
             return await _clientRepository.DeletePermanent(dni);
         }
 
-        public async Task<PaginatedResponse<Client>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<Client>> FindAll(ClientFilter filters)
         {
-            return await _clientRepository.FindAll(pageIndex, pageSize);
+            return await _clientRepository.FindAll(filters);
         }
 
         public async Task<Client?> FindByDni(long dni)
@@ -57,14 +58,14 @@ namespace org.apimiroc.core.business.Services
 
         }
 
-        public async Task<Client> Update(Client client)
+        public async Task<Client> Update(Client client, long dniOld)
         {
-            return await _clientRepository.Update(client);
+            return await _clientRepository.Update(client, dniOld);
         }
 
-        public async Task<Client> UpdatePartial(Client client)
+        public async Task<Client> UpdatePartial(Client client, long dniOld)
         {
-            return await _clientRepository.UpdatePartial(client);
+            return await _clientRepository.UpdatePartial(client, dniOld);
         }
     }
 }

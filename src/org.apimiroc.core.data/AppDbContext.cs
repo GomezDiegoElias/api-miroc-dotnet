@@ -16,6 +16,7 @@ namespace org.apimiroc.core.data
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Provider> Providers { get; set; }
 
         // metodos de paginaciones
 
@@ -81,6 +82,13 @@ namespace org.apimiroc.core.data
 
             modelBuilder.Entity<Employee>()
                 .HasQueryFilter(e => !e.IsDeleted); // Filtro global para soft delete
+
+            modelBuilder.Entity<Provider>()
+                .HasIndex(q => q.Cuit)
+                .IsUnique();
+            
+            modelBuilder.Entity<Provider>()
+                .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
 
         }
 

@@ -3,6 +3,7 @@ using org.apimiroc.core.data.Repositories;
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Utils;
@@ -31,9 +32,9 @@ namespace org.apimiroc.core.business.Services
             throw new NotImplementedException();
         }
 
-        public async Task<PaginatedResponse<User>> FindAllUsers(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<User>> FindAllUsers(UserFilter filters)
         {
-            return await _userRepository.FindAll(pageIndex, pageSize);
+            return await _userRepository.FindAll(filters);
         }
 
         public async Task<User?> FindByDni(long dni)
@@ -81,14 +82,14 @@ namespace org.apimiroc.core.business.Services
 
         }
 
-        public Task<User> Update(User user)
+        public Task<User> Update(User user, long dniOld)
         {
-            return _userRepository.Update(user);
+            return _userRepository.Update(user, dniOld);
         }
 
-        public Task<User> UpdatePartial(User user)
+        public Task<User> UpdatePartial(User user, long dniOld)
         {
-            return _userRepository.UpdatePartial(user);
+            return _userRepository.UpdatePartial(user, dniOld);
         }
     }
 }

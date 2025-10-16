@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -32,13 +34,10 @@ namespace org.apimiroc.app.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<PaginatedResponse<ClientResponse>>>> FindAllClients(
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 5
-        )
+        public async Task<ActionResult<StandardResponse<PaginatedResponse<ClientResponse>>>> FindAllClients([FromQuery] ClientFilter filters)
         {
 
-            var clients = await _clientService.FindAll(pageIndex, pageSize);
+            var clients = await _clientService.FindAll(filters);
             var clientResponse = clients.Items.Select(c => ClientMapper.ToResponse(c)).ToList();
 
             var paginatedResponse = new PaginatedResponse<ClientResponse>
@@ -132,7 +131,7 @@ namespace org.apimiroc.app.Controllers
 
             var clientToUpdate = ClientMapper.ToEntityForUpdate(request, existingClient!);
 
-            var updatedClient = await _clientService.Update(clientToUpdate);
+            var updatedClient = await _clientService.Update(clientToUpdate, dni);
             var response = ClientMapper.ToResponse(updatedClient);
 
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente actualizado exitosamente", response));
@@ -166,9 +165,17 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
+            var validationResult = await _clientValidation.ValidateAsync(clientToPatch);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
+                return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
+            }
+
             var client = ClientMapper.ToEntityForPatch(clientToPatch, existingClient!);
 
-            var updatedClient = await _clientService.UpdatePartial(client);
+            var updatedClient = await _clientService.UpdatePartial(client, dni);
 
             var response = ClientMapper.ToResponse(updatedClient);
 

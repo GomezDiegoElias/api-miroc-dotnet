@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -56,11 +57,21 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<PaginatedResponse<User>> FindAll(int pageIndex, int pageSize)
+        public async Task<PaginatedResponse<User>> FindAll(UserFilter filter)
         {
+            // Parámetros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "@Q", filter.Q },
+                { "@FDni", filter.FDni },
+                { "@FEmail", filter.FEmail },
+                { "@FFirstName", filter.FFirstName },
+                { "@FLastName", filter.FLastName }
+            };
+
             return await _paginationRepository.ExecutePaginationAsync(
-                "getUserPagination",
-                reader => new User
+                storedProcedure: "getUserPaginationAdvanced",
+                map:reader => new User
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
                     Dni = Convert.ToInt64(reader["dni"]),
@@ -70,10 +81,11 @@ namespace org.apimiroc.core.data.Repositories
                     Role = new Role(reader["role"].ToString() ?? string.Empty, Enumerable.Empty<string>()),
                     Status = Enum.Parse<Status>(reader["status"].ToString() ?? string.Empty)
                 },
-                pageIndex,
-                pageSize
+                filter: filter,
+                extraParams: extraParams
             );
         }
+
 
         public async Task<User?> FindByDni(long dni)
         {
@@ -110,16 +122,16 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<User> Update(User user)
+        public async Task<User> Update(User user, long dniOld)
         {
 
             var existingUser = await _context.Users
                 .Include(u => u.Role)
                 .ThenInclude(r => r.RolePermissions)
                 .ThenInclude(rp => rp.Permission)
-                .FirstOrDefaultAsync(u => u.Dni == user.Dni);
+                .FirstOrDefaultAsync(u => u.Dni == dniOld);
 
-            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {user.Dni} no existe");
+            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {dniOld} no existe");
 
             // Actualiza los campos del usuario existente
             existingUser.Dni = user.Dni;
@@ -145,19 +157,19 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<User> UpdatePartial(User user)
+        public async Task<User> UpdatePartial(User user, long dniOld)
         {
 
             var existingUser = await _context.Users
                 .Include(u => u.Role)
                 .ThenInclude(r => r.RolePermissions)
                 .ThenInclude(rp => rp.Permission)
-                .FirstOrDefaultAsync(u => u.Dni == user.Dni);
+                .FirstOrDefaultAsync(u => u.Dni == dniOld);
 
-            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {user.Dni} no existe");
+            if (existingUser == null) throw new UserNotFoundException($"Usuario con DNI {dniOld} no existe");
 
             // Actualiza solo los campos que no son nulos en el objeto user
-            existingUser.Dni = existingUser.Dni;
+            existingUser.Dni = user.Dni;
             existingUser.Email = user.Email;
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;

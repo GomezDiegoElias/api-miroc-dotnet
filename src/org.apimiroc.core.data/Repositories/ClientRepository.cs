@@ -2,6 +2,7 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.data.Repositories
@@ -16,6 +17,38 @@ namespace org.apimiroc.core.data.Repositories
         {
             _context = context;
             _paginationRepository = paginationRepository;
+        }
+
+        public async Task<Client?> FindByDni(long dni)
+        {
+            return await _context.Clients.FirstOrDefaultAsync(x => x.Dni == dni);
+        }
+
+        public async Task<PaginatedResponse<Client>> FindAll(ClientFilter filters)
+        {
+            
+            // Parametros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "Q", filters.Q  },
+                { "FDni", filters.FDni },
+                { "FFirstName", filters.FFirstName },
+                { "FAddress", filters.FAddress }  
+            };
+
+            return await _paginationRepository.ExecutePaginationAsync(
+                storedProcedure: "getClientPaginationAdvanced",
+                map: reader => new Client
+                {
+                    Id = reader["id"].ToString() ?? string.Empty,
+                    Dni = Convert.ToInt64(reader["dni"]),
+                    FirstName = reader["first_name"].ToString() ?? string.Empty,
+                    Address = reader["address"].ToString() ?? string.Empty
+                },
+                filter: filters,
+                extraParams: extraParams
+            );
+
         }
 
         public async Task<Client> DeleteLogic(long dni)
@@ -45,29 +78,6 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        // id, dni, first_name, address
-
-        public async Task<PaginatedResponse<Client>> FindAll(int pageIndex, int pageSize)
-        {
-            return await _paginationRepository.ExecutePaginationAsync(
-                "getClientPagination",
-                reader => new Client
-                {
-                    Id = reader["id"].ToString() ?? string.Empty,
-                    Dni = Convert.ToInt64(reader["dni"]),
-                    FirstName = reader["first_name"].ToString() ?? string.Empty,
-                    Address = reader["address"].ToString() ?? string.Empty
-                },
-                pageIndex,
-                pageSize
-            );
-        }
-
-        public async Task<Client?> FindByDni(long dni)
-        {
-            return await _context.Clients.FirstOrDefaultAsync(x => x.Dni == dni);
-        }
-
         public async Task<Client> Save(Client client)
         {
             _context.Clients.Add(client);
@@ -75,10 +85,10 @@ namespace org.apimiroc.core.data.Repositories
             return client;
         }
 
-        public async Task<Client> Update(Client client)
+        public async Task<Client> Update(Client client, long dniOld)
         {
-            var existingEntity = await FindByDni(client.Dni)
-                ?? throw new ClientNotFoundException(client.Dni.ToString());
+            var existingEntity = await FindByDni(dniOld)
+                ?? throw new ClientNotFoundException(dniOld.ToString());
 
             // Actualizar solo los campos necesarios
             existingEntity.Dni = client.Dni;
@@ -90,11 +100,11 @@ namespace org.apimiroc.core.data.Repositories
             return existingEntity;
         }
 
-        public async Task<Client> UpdatePartial(Client client)
+        public async Task<Client> UpdatePartial(Client client, long dniOld)
         {
 
-            var existingEntity = await FindByDni(client.Dni)
-                ?? throw new ClientNotFoundException(client.Dni.ToString());
+            var existingEntity = await FindByDni(dniOld)
+                ?? throw new ClientNotFoundException(dniOld.ToString());
 
             existingEntity.Dni = client.Dni;
             existingEntity.FirstName = client.FirstName;

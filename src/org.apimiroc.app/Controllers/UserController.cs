@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
@@ -36,15 +37,17 @@ namespace org.apimiroc.app.Controllers
         //[Authorize(Roles = "ADMIN")] // Requiere autenticacion y que tenga el rol de admin
         //[Authorize(Policy = "CanCREATE_Client")] // Requiere autenticacion y el permiso de crear cliente
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<PaginatedResponse<UserResponse>>>> GetAllUsers(
-            [FromQuery] int page = 1, 
-            [FromQuery] int pageSize = 10
-        )
+        public async Task<ActionResult<StandardResponse<PaginatedResponse<UserResponse>>>> GetAllUsers([FromQuery] UserFilter filter)
         {
+            // Asegurarse de que PageIndex y PageSize tengan valores por defecto
+            filter.PageIndex = filter.PageIndex <= 0 ? 1 : filter.PageIndex;
+            filter.PageSize = filter.PageSize <= 0 ? 10 : filter.PageSize;
 
-            var users = await _userService.FindAllUsers(page, pageSize);
+            // Llamar al servicio
+            var users = await _userService.FindAllUsers(filter);
 
-            var userResponse = users.Items.Select(u => UserMapper.ToResponse(u)).ToList();
+            // Mapear a DTO de respuesta
+            var userResponse = users.Items.Select(UserMapper.ToResponse).ToList();
 
             var paginatedResponse = new PaginatedResponse<UserResponse>
             {
@@ -62,7 +65,6 @@ namespace org.apimiroc.app.Controllers
             );
 
             return Ok(response);
-
         }
 
         [AllowAnonymous]
@@ -122,7 +124,7 @@ namespace org.apimiroc.app.Controllers
 
             var userToUpdate = UserMapper.ToEntityForUpdate(request, existingUser);
 
-            var updatedUser = await _userService.Update(userToUpdate);
+            var updatedUser = await _userService.Update(userToUpdate, dni);
             var response = UserMapper.ToResponse(updatedUser);
 
             return Ok(new StandardResponse<UserResponse>(
@@ -161,19 +163,19 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
-            //var validationResult = await _userUpdateValidator.ValidateAsync(userToPatch);
-            //if (!validationResult.IsValid)
-            //{
-            //    var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-            //    var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-            //    return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
-            //}
+            var validationResult = await _userUpdateValidator.ValidateAsync(userToPatch);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
+                return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
+            }
 
             // Usa el mapper especifico para PATCH
             var userDomain = UserMapper.ToEntityForPatch(userToPatch, existingUser);
 
             // Guarda los cambios
-            var updatedUser = await _userService.UpdatePartial(userDomain);
+            var updatedUser = await _userService.UpdatePartial(userDomain, dni);
 
             // Mapea a response DTO
             var response = UserMapper.ToResponse(updatedUser);
