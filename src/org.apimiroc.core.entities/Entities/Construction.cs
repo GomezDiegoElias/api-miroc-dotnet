@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace org.apimiroc.core.entities.Entities
 {
-    [Table("tbl_employee")]
-    public class Employee
+    [Table("tbl_construction")]
+    public class Construction
     {
 
         [Key]
@@ -12,22 +12,26 @@ namespace org.apimiroc.core.entities.Entities
         public string Id { get; set; }
 
         [Required]
-        [Column("dni")]
-        public long Dni { get; set; }
+        [MaxLength(50)]
+        [Column("Name")]
+        public string Name { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        [Column("first_name")]
-        public string FirstName { get; set; }
+        [Column("StartDate")]
+        public DateTime StartDate { get; set; } 
 
-        [MaxLength(50)]
-        [Column("last_name")]
-        public string LastName { get; set; }
+        [Column("EndDate")]
+        public DateTime EndDate { get; set; }
 
         [Required]
         [MaxLength(100)]
-        [Column("workstation")]
-        public string WorkStation { get; set; }
+        [Column("Ubication")]
+        public string Ubication { get; set; }
+
+        [Required]
+        [MaxLength(300)]
+        [Column("Description")]
+        public string Description { get; set; }
 
         [Required]
         [Column("is_deleted")]
@@ -41,15 +45,16 @@ namespace org.apimiroc.core.entities.Entities
         [Column("update_at")]
         public DateTime UpdateAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") != null ? DateTime.Now : DateTime.Now;
 
-        public Employee() { }
+        public Construction() { }
 
-        public Employee(string id, long dni, string firstName, string lastName, string workStation)
+        public Construction(string id, string name, DateTime startDate, DateTime endDate, string ubication, string description)
         {
             Id = id;
-            Dni = dni;
-            FirstName = firstName;
-            LastName = lastName;
-            WorkStation = workStation;
+            Name = name;
+            StartDate = startDate;
+            EndDate = endDate;
+            Ubication = ubication;
+            Description = description;
         }
 
         public static string GenerateId()
