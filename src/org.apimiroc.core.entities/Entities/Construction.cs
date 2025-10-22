@@ -13,24 +13,24 @@ namespace org.apimiroc.core.entities.Entities
 
         [Required]
         [MaxLength(50)]
-        [Column("Name")]
+        [Column("name")]
         public string Name { get; set; }
 
         [Required]
-        [Column("StartDate")]
+        [Column("startDate")]
         public DateTime StartDate { get; set; } 
 
-        [Column("EndDate")]
+        [Column("endDate")]
         public DateTime EndDate { get; set; }
 
         [Required]
         [MaxLength(100)]
-        [Column("Ubication")]
+        [Column("address")]
         public string Ubication { get; set; }
 
         [Required]
         [MaxLength(300)]
-        [Column("Description")]
+        [Column("description")]
         public string Description { get; set; }
 
         [Required]
