@@ -62,11 +62,12 @@ namespace org.apimiroc.core.data.Repositories
 
             return await _paginationRepository.ExecutePaginationAsync(
                 storedProcedure: "getProviderPaginationAdvanced",
-                map: reader => new Provider
+                map: reader => new Construction
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
-                    Cuit = Convert.ToInt64(reader["cuit"]),
-                    FirstName = reader["first_name"].ToString() ?? string.Empty,
+                    Name = reader["name"].ToString() ?? string.Empty,
+                    StartDate = Convert.ToDateTime(reader["start_date"]),
+                    EndDate = Convert.ToDateTime(reader["end_date"]),
                     Address = reader["address"].ToString() ?? string.Empty,
                     Description = reader["description"].ToString() ?? string.Empty,
                 },
@@ -76,45 +77,47 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-        public async Task<Provider?> FindByCuit(long cuit)
+        public async Task<Construction?> FindByName(string name)
         {
-            return await _context.Providers.FirstOrDefaultAsync(x => x.Cuit == cuit);
+            return await _context.Constructions.FirstOrDefaultAsync(x => x.Name == name);
         }
 
-        public async Task<Provider> Save(Provider provider)
+        public async Task<Construction> Save(Construction construction)
         {
-            _context.Providers.Add(provider);
+            _context.Constructions.Add(construction);
             await _context.SaveChangesAsync();
-            return provider;
+            return construction;
         }
 
-        public async Task<Provider> Update(Provider provider, long cuitOld)
+        public async Task<Construction> Update(Construction construction, string nameOld)
         {
-            var existingEntity = await FindByCuit(cuitOld)
-                ?? throw new ProviderNotFoundException(cuitOld.ToString());
+            var existingEntity = await FindByName(nameOld)
+                ?? throw new ConstructionNotFoundException(nameOld);
 
             // Actualizar solo los campos necesarios
-            existingEntity.Cuit = provider.Cuit;
-            existingEntity.FirstName = provider.FirstName;
-            existingEntity.Address = provider.Address;
-            existingEntity.Description = provider.Description;
-            existingEntity.UpdatedAt = DateTime.Now;
+            existingEntity.Name = construction.Name;
+            existingEntity.StartDate = construction.StartDate;
+            existingEntity.EndDate = construction.EndDate;
+            existingEntity.Address = construction.Address;
+            existingEntity.Description = construction.Description;
+            existingEntity.UpdateAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return existingEntity;
         }
 
-        public async Task<Provider> UpdatePartial(Provider provider, long cuitOld)
+        public async Task<Construction> UpdatePartial(Construction construction, string nameOld)
         {
 
-            var existingEntity = await FindByCuit(cuitOld)
-                ?? throw new ProviderNotFoundException(cuitOld.ToString());
+            var existingEntity = await FindByName(nameOld)
+                ?? throw new ConstructionNotFoundException(nameOld.ToString());
 
-            existingEntity.Cuit = provider.Cuit;
-            existingEntity.FirstName = provider.FirstName;
-            existingEntity.Address = provider.Address;
-            existingEntity.Description = provider.Description;
-            existingEntity.UpdatedAt = DateTime.Now;
+            existingEntity.Name = construction.Name;
+            existingEntity.StartDate = construction.StartDate;
+            existingEntity.EndDate = construction.EndDate;
+            existingEntity.Address = construction.Address;
+            existingEntity.Description = construction.Description;
+            existingEntity.UpdateAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
 

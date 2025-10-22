@@ -26,7 +26,7 @@ namespace org.apimiroc.core.entities.Entities
         [Required]
         [MaxLength(100)]
         [Column("address")]
-        public string Ubication { get; set; }
+        public string Address { get; set; }
 
         [Required]
         [MaxLength(300)]
@@ -47,13 +47,13 @@ namespace org.apimiroc.core.entities.Entities
 
         public Construction() { }
 
-        public Construction(string id, string name, DateTime startDate, DateTime endDate, string ubication, string description)
+        public Construction(string id, string name, DateTime startDate, DateTime endDate, string address, string description)
         {
             Id = id;
             Name = name;
             StartDate = startDate;
             EndDate = endDate;
-            Ubication = ubication;
+            Address = address;
             Description = description;
         }
 
