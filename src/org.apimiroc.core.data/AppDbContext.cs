@@ -84,6 +84,7 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<Employee>()
                 .HasQueryFilter(e => !e.IsDeleted); // Filtro global para soft delete
 
+            // PROVIDER
             modelBuilder.Entity<Provider>()
                 .HasIndex(q => q.Cuit)
                 .IsUnique();
@@ -91,6 +92,12 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<Provider>()
                 .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
 
+            // CONSTRUCTION
+            modelBuilder.Entity<Construction>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+            modelBuilder.Entity<Construction>()
+                .HasQueryFilter(c => !c.IsDeleted); // Filtro global para soft delete
         }
 
     }
