@@ -1,6 +1,6 @@
 ﻿namespace org.apimiroc.core.shared.Dto.Response
 {
-    public record ConstrucctionResponse(
+    public record ConstructionResponse(
         string Name,
         DateTime StartDate,
         DateTime EndDate,
