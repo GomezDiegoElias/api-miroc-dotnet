@@ -12,8 +12,8 @@ using org.apimiroc.core.data;
 namespace org.apimiroc.core.data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023002937_CreateTableConstruction")]
-    partial class CreateTableConstruction
+    [Migration("20251023012615_ResolveMigrations")]
+    partial class ResolveMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,36 @@ namespace org.apimiroc.core.data.Migrations
                     b.ToTable("tbl_client");
                 });
 
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Concept", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_concept");
+                });
+
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Construction", b =>
                 {
                     b.Property<string>("Id")
@@ -112,9 +142,6 @@ namespace org.apimiroc.core.data.Migrations
                         .HasColumnName("update_at");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("tbl_construction");
                 });
@@ -165,6 +192,60 @@ namespace org.apimiroc.core.data.Migrations
                         .IsUnique();
 
                     b.ToTable("tbl_employee");
+                });
+
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Movement", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("client_id");
+
+                    b.Property<int>("CodMovement")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("cod_movement");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CodMovement"));
+
+                    b.Property<int>("ConceptId")
+                        .HasColumnType("int")
+                        .HasColumnName("concept_id");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date");
+
+                    b.Property<string>("EmployeeId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("employee_id");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("ProviderId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("provider_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ConceptId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ProviderId");
+
+                    b.ToTable("tbl_movement");
                 });
 
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Permission", b =>
@@ -348,6 +429,38 @@ namespace org.apimiroc.core.data.Migrations
                     b.ToTable("tbl_user");
                 });
 
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Movement", b =>
+                {
+                    b.HasOne("org.apimiroc.core.entities.Entities.Client", "Client")
+                        .WithMany("Movements")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("org.apimiroc.core.entities.Entities.Concept", "Concept")
+                        .WithMany("Movements")
+                        .HasForeignKey("ConceptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("org.apimiroc.core.entities.Entities.Employee", "Employee")
+                        .WithMany("Movements")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("org.apimiroc.core.entities.Entities.Provider", "Provider")
+                        .WithMany("Movements")
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Concept");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Provider");
+                });
+
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.RolePermission", b =>
                 {
                     b.HasOne("org.apimiroc.core.entities.Entities.Permission", "Permission")
@@ -378,9 +491,29 @@ namespace org.apimiroc.core.data.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Client", b =>
+                {
+                    b.Navigation("Movements");
+                });
+
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Concept", b =>
+                {
+                    b.Navigation("Movements");
+                });
+
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Employee", b =>
+                {
+                    b.Navigation("Movements");
+                });
+
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Provider", b =>
+                {
+                    b.Navigation("Movements");
                 });
 
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Role", b =>

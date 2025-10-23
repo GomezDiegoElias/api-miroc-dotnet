@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace org.apimiroc.core.data.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateTableConstruction : Migration
+    public partial class ResolveMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,12 +29,6 @@ namespace org.apimiroc.core.data.Migrations
                 {
                     table.PrimaryKey("PK_tbl_construction", x => x.id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_construction_name",
-                table: "tbl_construction",
-                column: "name",
-                unique: true);
         }
 
         /// <inheritdoc />

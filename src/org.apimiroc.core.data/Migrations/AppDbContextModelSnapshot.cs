@@ -94,6 +94,55 @@ namespace org.apimiroc.core.data.Migrations
                     b.ToTable("tbl_concept");
                 });
 
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Construction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("address");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("create_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("endDate");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("startDate");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("update_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_construction");
+                });
+
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Employee", b =>
                 {
                     b.Property<string>("Id")
