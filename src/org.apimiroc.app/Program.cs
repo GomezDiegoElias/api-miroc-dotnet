@@ -25,6 +25,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserCreateValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<ClientValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<ProviderValidation>();
 
+
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSwaggerDocumentation();
 JwtConfig.ConfigureServices(builder.Services, builder.Configuration);

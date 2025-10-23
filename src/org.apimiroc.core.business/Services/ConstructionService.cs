@@ -41,6 +41,10 @@ namespace org.apimiroc.core.business.Services
 
         public async Task<Construction> Save(ConstructionRequest request)
         {
+            // Validar unicidad del nombre
+            var exists = await _constructionRepository.FindByName(request.Name);
+            if (exists != null)
+                throw new Exception("El nombre de la construcción ya existe.");
 
             // Validaciones
 
