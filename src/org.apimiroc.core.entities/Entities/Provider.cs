@@ -42,6 +42,9 @@ namespace org.apimiroc.core.entities.Entities
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") != null ? DateTime.Now : DateTime.MinValue;
 
+        [InverseProperty(nameof(Movement.Provider))]
+        public ICollection<Movement> Movements { get; set; } = new List<Movement>();
+
         public Provider() { }
 
         public Provider(string id, long cuit, string firstname, string address, string description)

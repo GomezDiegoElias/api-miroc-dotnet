@@ -41,6 +41,9 @@ namespace org.apimiroc.core.entities.Entities
         [Column("update_at")]
         public DateTime UpdateAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") != null ? DateTime.Now : DateTime.Now;
 
+        [InverseProperty(nameof(Movement.Employee))]
+        public ICollection<Movement> Movements { get; set; } = new List<Movement>();
+
         public Employee() { }
 
         public Employee(string id, long dni, string firstName, string lastName, string workStation)

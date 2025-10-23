@@ -25,6 +25,7 @@ namespace org.apimiroc.core.data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            // USER
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email) // Indice unico en el campo Email
                 .IsUnique();
@@ -40,6 +41,7 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<User>()
                 .HasQueryFilter(u => u.Status != Status.DELETED); // Filtro global para soft delete
 
+            // ROLE - PERMISSION - ROLEPERMISSION
             modelBuilder.Entity<RolePermission>()
                 .HasOne(rp => rp.Role)
                 .WithMany(r => r.RolePermissions)
@@ -92,12 +94,34 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<Provider>()
                 .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
 
-            // CONSTRUCTION
-            modelBuilder.Entity<Construction>()
-                .HasIndex(c => c.Name)
-                .IsUnique();
-            modelBuilder.Entity<Construction>()
-                .HasQueryFilter(c => !c.IsDeleted); // Filtro global para soft delete
+            // Client 1:N Movement
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Movements)
+                .WithOne(m => m.Client)
+                .HasForeignKey(m => m.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Provider 1:N Movement
+            modelBuilder.Entity<Provider>()
+                .HasMany(p => p.Movements)
+                .WithOne(m => m.Provider)
+                .HasForeignKey(m => m.ProviderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Employee 1:N Movement
+            modelBuilder.Entity<Employee>()
+                .HasMany(e => e.Movements)
+                .WithOne(m => m.Employee)
+                .HasForeignKey(m => m.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Concept 1:N Movement
+            modelBuilder.Entity<Concept>()
+                .HasMany(c => c.Movements)
+                .WithOne(m => m.Concept)
+                .HasForeignKey(m => m.ConceptId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
     }
