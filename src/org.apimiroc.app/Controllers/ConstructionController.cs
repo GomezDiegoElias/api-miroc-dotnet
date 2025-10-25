@@ -56,7 +56,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{name:string}")]
+        [HttpGet("{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindConstructionByName(string name)
         {
             var construction = await _constructionService.FindByName(name);
@@ -88,7 +88,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("permanent/{name:string}")]
+        [HttpDelete("permanent/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> DeleteConstruction(string name)
         {
             var existingConstruction = await _constructionService.FindByName(name);
@@ -98,7 +98,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("{cuit:long}")]
+        [HttpDelete("{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionRequest>>> DeleteConstructionLogic(string name)
         {
             var existingConstruction = await _constructionService.FindByName(name);
@@ -109,7 +109,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("{string:name}")]
+        [HttpPut("{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> UpdateConstruction(
             [FromBody] ConstructionRequest request,
             string name
@@ -137,7 +137,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPatch("{string:name}")]
+        [HttpPatch("{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> PartiallyUpdateConstruction(
             string name,
             [FromBody] JsonPatchDocument<ConstructionRequest> patchDoc
