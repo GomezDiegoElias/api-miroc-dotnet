@@ -18,6 +18,8 @@ namespace org.apimiroc.core.data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<Construction> Constructions { get; set; }
+        public DbSet<Movement> Movements { get; set; }
+        public DbSet<Concept> Concepts { get; set; }
 
         // metodos de paginaciones
 
@@ -94,6 +96,24 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<Provider>()
                 .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
 
+            // CONSTRUCTION
+
+            // CONCEPT
+            //modelBuilder.Entity<Concept>()
+            //    .HasIndex(c => c.Id)
+            //    .IsUnique();
+            // no hara falta porque es la key primaria
+            modelBuilder.Entity<Concept>()
+                .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
+
+            // MOVEMENT
+            modelBuilder.Entity<Movement>()
+                .HasIndex(m => m.CodMovement)
+                .IsUnique();
+
+            modelBuilder.Entity<Movement>()
+                .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
+
             // Client 1:N Movement
             modelBuilder.Entity<Client>()
                 .HasMany(c => c.Movements)
@@ -120,6 +140,13 @@ namespace org.apimiroc.core.data
                 .HasMany(c => c.Movements)
                 .WithOne(m => m.Concept)
                 .HasForeignKey(m => m.ConceptId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Construction 1:N Movement
+            modelBuilder.Entity<Construction>()
+                .HasMany(c => c.Movements)
+                .WithOne(m => m.Construction)
+                .HasForeignKey(m => m.ConstructionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }

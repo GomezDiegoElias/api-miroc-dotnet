@@ -61,7 +61,7 @@ namespace org.apimiroc.core.data.Repositories
             };
 
             return await _paginationRepository.ExecutePaginationAsync(
-                storedProcedure: "getProviderPaginationAdvanced",
+                storedProcedure: "getConstructionPaginationAdvanced",
                 map: reader => new Construction
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
