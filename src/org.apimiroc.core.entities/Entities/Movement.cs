@@ -27,6 +27,10 @@ namespace org.apimiroc.core.entities.Entities
         [Column("payment_method")]
         public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CASH;
 
+        // estado
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
+
         // Llave foránea a Concept
         [Required]
         [Column("concept_id")]
@@ -54,6 +58,12 @@ namespace org.apimiroc.core.entities.Entities
 
         [ForeignKey(nameof(EmployeeId))]
         public Employee? Employee { get; set; }
+
+        [Column("construction_id")]
+        public string? ConstructionId { get; set; }
+
+        [ForeignKey(nameof(ConstructionId))]
+        public Construction? Construction { get; set; }
 
         public Movement() { }
 
