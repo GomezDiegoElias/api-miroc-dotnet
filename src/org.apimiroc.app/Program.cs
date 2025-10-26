@@ -25,6 +25,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserCreateValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<ClientValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<ProviderValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<ConstructionValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<ConceptValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<MovementValidation>();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSwaggerDocumentation();
@@ -35,14 +37,14 @@ var app = builder.Build();
 // Middleware
 app.UseGlobalMiddlewares();
 
- // Seeder
-await DbSeederConfig.SeedAsync(app);
-
 // Swagger UI
 app.UseSwaggerDocumentation();
 
 // Migraciones de D
 DatabaseConfig.MigrateDatabase(app.Services);
+
+// Seeder
+//await DbSeederConfig.SeedAsync(app);
 
 app.MapGet("/", () =>
 {
