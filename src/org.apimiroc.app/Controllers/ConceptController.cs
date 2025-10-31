@@ -62,5 +62,83 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetById(int id)
+        {
+            var conceptObtained = await _service.FindById(id);
+            return Ok(new StandardResponse<ConceptResponse>(
+                true,
+                "Concepto de movimiento obtenido exitosamente.",
+                ConceptMapper.ToResponse(conceptObtained),
+                null,
+                200
+            ));
+        }
+
+        [HttpGet("by-name/{name}")]
+        public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetByName(string name)
+        {
+            var conceptObtained = await _service.FindByName(name);
+            return Ok(new StandardResponse<ConceptResponse>(
+                true,
+                "Concepto de movimiento obtenido exitosamente.",
+                ConceptMapper.ToResponse(conceptObtained),
+                null,
+                200
+            ));
+        }
+
+        [HttpGet("by-type/{type}")]
+        public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetByType(string type)
+        {
+            var conceptObtained = await _service.FindByType(type);
+            return Ok(new StandardResponse<ConceptResponse>(
+                true,
+                "Concepto de movimiento obtenido exitosamente.",
+                ConceptMapper.ToResponse(conceptObtained),
+                null,
+                200
+            ));
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<StandardResponse<ConceptResponse>>> DeletedLogic(int id)
+        {
+            var deletedConcept = await _service.Delete(id);
+            return Ok(new StandardResponse<ConceptResponse>(
+                true,
+                "Concepto de movimiento eliminado exitosamente.",
+                ConceptMapper.ToResponse(deletedConcept),
+                null,
+                200
+            ));
+        }
+
+        //[HttpDelete("permanent/{id:int}")]
+        //public async Task<ActionResult<StandardResponse<ConceptResponse>>> DeletedPermanent(int id)
+        //{
+        //    var deletedConcept = await _service.DeletePermanent(id);
+        //    return Ok(new StandardResponse<ConceptResponse>(
+        //        true,
+        //        "Concepto de movimiento eliminado permanentemente.",
+        //        ConceptMapper.ToResponse(deletedConcept),
+        //        null,
+        //        200
+        //    ));
+        //}
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<StandardResponse<ConceptResponse>>> UpdateConcept(int id, [FromBody] ConceptRequest request)
+        {
+            var updatedConcept = await _service.Update(id, request);
+            return Ok(new StandardResponse<ConceptResponse>(
+                true,
+                "Concepto de movimiento actualizado exitosamente.",
+                ConceptMapper.ToResponse(updatedConcept),
+                null,
+                200
+            ));
+        }
+
     }
 }
