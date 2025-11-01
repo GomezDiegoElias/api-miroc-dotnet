@@ -8,5 +8,7 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<List<Movement>> FindAll();
         public Task<Movement> FindByCode(int code);
         public Task<Movement> FindById(string id);
+        public Task<Movement> Update(Movement movement, int code);
+        public Task<Movement> UpdatePartial(Movement movement, int code);
     }
 }

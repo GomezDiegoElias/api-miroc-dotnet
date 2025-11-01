@@ -98,5 +98,23 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [HttpPut("{code:int}")]
+        public async Task<ActionResult<StandardResponse<MovementResponse>>> UpdateMovementByCode(int code, [FromBody] MovementRequest request)
+        {
+
+            var movementCaptured = MovementMapper.ToEntity(request);
+            var movementUpdated = await _service.Update(movementCaptured, code);
+            var response = MovementMapper.ToResponse(movementUpdated);
+
+            return Ok(new StandardResponse<MovementResponse>(
+                true,
+                "Movimiento actualizado exitosamente",
+                response,
+                null,
+                200
+            ));
+
+        }
+
     }
 }

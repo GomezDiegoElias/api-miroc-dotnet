@@ -36,5 +36,28 @@ namespace org.apimiroc.core.business.Services
         {
             return await _repository.Save(movement);
         }
+
+        public async Task<Movement> Update(Movement movement, int code)
+        {
+            var existingMovement = await _repository.FindByCode(code)
+                ?? throw new MovementNotFoundException(code);
+
+            existingMovement.Amount = movement.Amount;
+            existingMovement.PaymentMethod = movement.PaymentMethod;
+            existingMovement.ConceptId = movement.ConceptId;
+            existingMovement.ClientId = movement.ClientId;
+            existingMovement.ProviderId = movement.ProviderId;
+            existingMovement.EmployeeId = movement.EmployeeId;
+            existingMovement.ConstructionId = movement.ConstructionId;
+            existingMovement.Date = DateTime.Now;
+
+            return await _repository.Update(existingMovement);
+        }
+
+
+        public Task<Movement> UpdatePartial(Movement movement, int code)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

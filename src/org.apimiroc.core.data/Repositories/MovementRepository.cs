@@ -69,5 +69,24 @@ namespace org.apimiroc.core.data.Repositories
                 .Include(m => m.Construction)
                 .FirstAsync(m => m.Id == movement.Id);
         }
+
+        public async Task<Movement> Update(Movement movement)
+        {
+            await _context.SaveChangesAsync();
+
+            return await _context.Movements
+                .Include(m => m.Concept)
+                .Include(m => m.Client)
+                .Include(m => m.Provider)
+                .Include(m => m.Employee)
+                .Include(m => m.Construction)
+                .FirstAsync(m => m.Id == movement.Id);
+        }
+
+
+        public Task<Movement> UpdatePartial(Movement movement)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
