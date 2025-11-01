@@ -8,6 +8,7 @@ namespace org.apimiroc.core.data.Repositories.Imp
     {
         public Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters);
         public Task<Construction?> FindByName(string name);
+        public Task<Construction?> FindById(string id);
         public Task<Construction> Save(Construction construction);
         public Task<Construction> Update(Construction construction, string nameOld);
         public Task<Construction> DeletePermanent(string name);

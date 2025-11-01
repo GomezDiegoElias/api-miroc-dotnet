@@ -33,6 +33,12 @@ namespace org.apimiroc.core.business.Services
             return await _constructionRepository.FindAll(filters);
         }
 
+        public async Task<Construction?> FindById(string id)
+        {
+            return await _constructionRepository.FindById(id)
+                ?? throw new ConstructionNotFoundException(id);
+        }
+
         public async Task<Construction?> FindByName(string name)
         {
             return await _constructionRepository.FindByName(name)

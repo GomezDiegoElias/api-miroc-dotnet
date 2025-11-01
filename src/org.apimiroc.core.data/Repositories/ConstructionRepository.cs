@@ -66,8 +66,8 @@ namespace org.apimiroc.core.data.Repositories
                 {
                     Id = reader["id"].ToString() ?? string.Empty,
                     Name = reader["name"].ToString() ?? string.Empty,
-                    StartDate = Convert.ToDateTime(reader["start_date"]),
-                    EndDate = Convert.ToDateTime(reader["end_date"]),
+                    StartDate = Convert.ToDateTime(reader["startDate"]),
+                    EndDate = Convert.ToDateTime(reader["endDate"]),
                     Address = reader["address"].ToString() ?? string.Empty,
                     Description = reader["description"].ToString() ?? string.Empty,
                 },
@@ -75,6 +75,11 @@ namespace org.apimiroc.core.data.Repositories
                 extraParams: extraParams
             );
 
+        }
+
+        public async Task<Construction?> FindById(string id)
+        {
+            return await _context.Constructions.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Construction?> FindByName(string name)

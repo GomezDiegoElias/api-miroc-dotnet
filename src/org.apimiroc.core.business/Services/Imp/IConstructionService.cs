@@ -9,6 +9,7 @@ namespace org.apimiroc.core.business.Services.Imp
     {
         public Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters);
         public Task<Construction?> FindByName(string name);
+        public Task<Construction?> FindById(string id);
         public Task<Construction> Save(ConstructionRequest request);
         public Task<Construction> Update(Construction construction, string name);
         public Task<Construction> DeletePermanent(string name);
