@@ -6,5 +6,7 @@ namespace org.apimiroc.core.business.Services.Imp
     {
         public Task<Movement> Save(Movement movement);
         public Task<List<Movement>> FindAll();
+        public Task<Movement> FindByCode(int code);
+        public Task<Movement> FindById(string id);
     }
 }

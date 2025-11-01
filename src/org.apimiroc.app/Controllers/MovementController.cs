@@ -66,5 +66,31 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [HttpGet("{code:int}")]
+        public async Task<ActionResult<StandardResponse<MovementResponse>>> GetByCode(int code)
+        {
+            var movement = await _service.FindByCode(code);
+            return Ok(new StandardResponse<MovementResponse>(
+                true,
+                "Movimiento obtenido exitosamente",
+                MovementMapper.ToResponse(movement),
+                null,
+                200
+            ));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<MovementResponse>>> GetById(string id)
+        {
+            var movement = await _service.FindById(id);
+            return Ok(new StandardResponse<MovementResponse>(
+                true,
+                "Movimiento obtenido exitosamente",
+                MovementMapper.ToResponse(movement),
+                null,
+                200
+            ));
+        }
+
     }
 }

@@ -2,8 +2,8 @@
 {
     public class MovementNotFoundException : Exception
     {
-        public MovementNotFoundException(int id)
-            : base($"Error: Movimiento con ID {id} no existe") { }
+        public MovementNotFoundException(int code)
+            : base($"Error: Movimiento con codigo {code} no existe") { }
         public MovementNotFoundException(string details) 
             : base($"Error: {details}") { }
     }

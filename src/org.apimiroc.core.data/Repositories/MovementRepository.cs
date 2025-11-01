@@ -38,7 +38,21 @@ namespace org.apimiroc.core.data.Repositories
                 .Include(m => m.Provider)
                 .Include(m => m.Employee)
                 .Include(m => m.Construction)
+                .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(m => m.CodMovement == code);
+            return movement!;
+        }
+
+        public async Task<Movement> FindById(string id)
+        {
+            var movement = await _context.Movements
+                .Include(m => m.Concept)
+                .Include(m => m.Client)
+                .Include(m => m.Provider)
+                .Include(m => m.Employee)
+                .Include(m => m.Construction)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.Id == id);
             return movement!;
         }
 
