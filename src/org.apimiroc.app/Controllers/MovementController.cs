@@ -4,7 +4,7 @@ using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
-using org.apimiroc.core.shared.Dto.Response;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.app.Controllers
 {
@@ -37,12 +37,12 @@ namespace org.apimiroc.app.Controllers
 
             var movementCaptured = MovementMapper.ToEntity(request);
             var movementSaved = await _service.Save(movementCaptured);
-            var response = MovementMapper.ToResponse(movementSaved);
+            //var response = MovementMapper.ToResponse(movementSaved);
 
             return Created(string.Empty, new StandardResponse<MovementResponse>(
                 true,
                 "Movimiento creado exitosamente",
-                response,
+                null, // response
                 null,
                 201
             ));

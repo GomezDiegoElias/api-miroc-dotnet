@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Utils;
 

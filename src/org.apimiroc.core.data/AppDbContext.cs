@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using System.Data;
 
 namespace org.apimiroc.core.data

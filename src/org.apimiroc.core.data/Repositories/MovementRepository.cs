@@ -13,6 +13,10 @@ namespace org.apimiroc.core.data.Repositories
         {
             _context = context;
         }
+
+        // Obtener todos los movimientos, incluyendo los eliminados logicamente
+        // en caso de que se quiera excluirlos, se deberia eliminar el .IgnoreQueryFilters()
+        // tiene sentido si para historial contable o auditoria
         public async Task<List<Movement>> FindAll()
         {
             return await _context.Movements
@@ -21,7 +25,21 @@ namespace org.apimiroc.core.data.Repositories
                 .Include(m => m.Provider)
                 .Include(m => m.Employee)
                 .Include(m => m.Construction)
+                .IgnoreQueryFilters() // ignora todos los filtros de cualquier entidad independiente
                 .ToListAsync();
+        }
+
+        // Obtener un movimiento por su codigo junto con la informacion completa de su relacion
+        public async Task<Movement> FindByCode(int code)
+        {
+            var movement = await _context.Movements
+                .Include(m => m.Concept)
+                .Include(m => m.Client)
+                .Include(m => m.Provider)
+                .Include(m => m.Employee)
+                .Include(m => m.Construction)
+                .FirstOrDefaultAsync(m => m.CodMovement == code);
+            return movement!;
         }
 
         public async Task<Movement> Save(Movement movement)

@@ -1,4 +1,4 @@
-﻿namespace org.apimiroc.core.entities.Entities
+﻿namespace org.apimiroc.core.entities.Enums
 {
     public enum PaymentMethod
     {

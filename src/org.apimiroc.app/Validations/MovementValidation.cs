@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.shared.Dto.Request;
 
 namespace org.apimiroc.app.Validations

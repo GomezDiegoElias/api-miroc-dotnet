@@ -6,5 +6,6 @@ namespace org.apimiroc.core.data.Repositories.Imp
     {
         public Task<Movement> Save(Movement movement);
         public Task<List<Movement>> FindAll();
+        public Task<Movement> FindByCode(int code);
     }
 }

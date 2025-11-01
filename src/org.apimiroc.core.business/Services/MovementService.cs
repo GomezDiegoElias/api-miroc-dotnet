@@ -18,7 +18,6 @@ namespace org.apimiroc.core.business.Services
         {
             return await _repository.FindAll();
         }
-
         public async Task<Movement> Save(Movement movement)
         {
             return await _repository.Save(movement);

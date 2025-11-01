@@ -13,5 +13,7 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<Client> DeletePermanent(long dni);
         public Task<Client> DeleteLogic(long dni);
         public Task<Client> UpdatePartial(Client client, long dniOld);
+        public Task<List<Movement>> FindAllMovementsClients();
+        public Task<List<Movement>> FindAllMovementsClientById(string id);
     }
 }

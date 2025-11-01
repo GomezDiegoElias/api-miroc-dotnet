@@ -61,7 +61,7 @@ namespace org.apimiroc.core.entities.Entities
         {
             string timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmss");
             string uuidPart = Guid.NewGuid().ToString().Split('-')[0];
-            return $"cli-{timestamp}-{uuidPart}";
+            return $"prv-{timestamp}-{uuidPart}";
         }
 
     }
