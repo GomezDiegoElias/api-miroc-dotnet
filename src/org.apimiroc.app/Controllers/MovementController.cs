@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response.Movements;
@@ -56,11 +57,13 @@ namespace org.apimiroc.app.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<StandardResponse<List<MovementResponse>>>> FindAllMovements()
+        public async Task<ActionResult<StandardResponse<PaginatedResponse<MovementResponse>>>> FindAllMovements(
+            [FromQuery] MovementFilter filters    
+        )
         {
 
-            var movements = await _service.FindAll();
-            var response = movements.Select(m => MovementMapper.ToResponse(m)).ToList();
+            var movements = await _service.FindAll(filters);
+            var response = movements.Items.Select(m => MovementMapper.ToResponse(m)).ToList();
 
             return Ok(new StandardResponse<List<MovementResponse>>(
                 true,

@@ -2,6 +2,8 @@
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
+using org.apimiroc.core.shared.Dto.Filter;
+using org.apimiroc.core.shared.Dto.General;
 
 namespace org.apimiroc.core.business.Services
 {
@@ -15,9 +17,9 @@ namespace org.apimiroc.core.business.Services
             _repository = repository;
         }
 
-        public async Task<List<Movement>> FindAll()
+        public async Task<PaginatedResponse<Movement>> FindAll(MovementFilter filters)
         {
-            return await _repository.FindAll();
+            return await _repository.FindAll(filters);
         }
 
         public async Task<Movement> FindByCode(int code)
