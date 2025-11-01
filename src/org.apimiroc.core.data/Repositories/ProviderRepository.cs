@@ -82,6 +82,11 @@ namespace org.apimiroc.core.data.Repositories
             return await _context.Providers.FirstOrDefaultAsync(x => x.Cuit == cuit);
         }
 
+        public async Task<Provider?> FindById(string id)
+        {
+            return await _context.Providers.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<Provider> Save(Provider provider)
         {
             _context.Providers.Add(provider);

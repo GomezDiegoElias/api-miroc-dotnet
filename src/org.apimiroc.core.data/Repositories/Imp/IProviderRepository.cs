@@ -8,6 +8,7 @@ namespace org.apimiroc.core.data.Repositories.Imp
     {
         public Task<PaginatedResponse<Provider>> FindAll(ProviderFilter filters);
         public Task<Provider?> FindByCuit(long cuit);
+        public Task<Provider?> FindById(string id);
         public Task<Provider> Save(Provider provider);
         public Task<Provider> Update(Provider provider, long cuitOld);
         public Task<Provider> DeletePermanent(long cuit);
