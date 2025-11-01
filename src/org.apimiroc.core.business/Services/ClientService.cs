@@ -50,6 +50,12 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new ClientNotFoundException(dni.ToString());
         }
 
+        public async Task<Client?> FindById(string id)
+        {
+            return await _clientRepository.FindById(id) 
+                ?? throw new ClientNotFoundException(id);
+        }
+
         public async Task<Client> Save(ClientRequest request)
         {
 

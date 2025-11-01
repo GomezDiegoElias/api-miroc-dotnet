@@ -64,6 +64,15 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<ClientResponse>>> FindClientById(string id)
+        {
+            var client = await _clientService.FindById(id);
+            var response = ClientMapper.ToResponse(client!);
+            return Ok(new StandardResponse<ClientResponse>(true, "Cliente obtenido exitosamente", response));
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> CreatedClient(
             [FromBody] ClientRequest request
