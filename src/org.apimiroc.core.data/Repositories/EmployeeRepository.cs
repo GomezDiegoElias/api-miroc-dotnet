@@ -69,6 +69,11 @@ namespace org.apimiroc.core.data.Repositories
             return await _context.Employees.FirstOrDefaultAsync(e => e.Dni == dni);
         }
 
+        public async Task<Employee?> FindById(string id)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<Employee> Save(Employee employee)
         {
             _context.Employees.Add(employee);

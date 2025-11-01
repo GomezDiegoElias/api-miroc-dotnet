@@ -9,6 +9,7 @@ namespace org.apimiroc.core.business.Services.Imp
     {
         public Task<PaginatedResponse<Employee>> FindAll(EmployeeFilter filters);
         public Task<Employee?> FindByDni(long dni);
+        public Task<Employee?> FindById(string id);
         public Task<Employee> Save(EmployeeRequest request);
         public Task<Employee> Update(Employee employee, long dniOld);
         public Task<Employee> UpdatePartial(Employee employee, long dniOld);

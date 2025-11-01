@@ -62,6 +62,15 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindEmployeeById(string id)
+        {
+            var employee = await _employeeService.FindById(id);
+            var response = EmployeeMapper.ToResponse(employee);
+            return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado obtenido exitosamente", response));
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> SaveEmployee([FromBody] EmployeeRequest request)
         {

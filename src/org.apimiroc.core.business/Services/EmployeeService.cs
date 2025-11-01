@@ -38,7 +38,13 @@ namespace org.apimiroc.core.business.Services
         public async Task<Employee?> FindByDni(long dni)
         {
             return await _employeeRepository.FindByDni(dni)
-                ?? throw new EmployeeNotFoundException(dni);
+                ?? throw new EmployeeNotFoundException(dni.ToString());
+        }
+
+        public async Task<Employee?> FindById(string id)
+        {
+            return await _employeeRepository.FindById(id)
+                ?? throw new EmployeeNotFoundException(id);
         }
 
         public async Task<Employee> Save(EmployeeRequest request)
