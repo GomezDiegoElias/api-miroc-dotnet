@@ -30,7 +30,7 @@ namespace org.apimiroc.core.config
             services.AddAuthorization(options =>
             {
 
-                var entities = new[] { "User", "Client", "Employee" };
+                var entities = new[] { "User", "Client", "Employee", "Provider", "Construction", "Movement" };
                 var actions = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
 
                 foreach (var entity in entities)
@@ -57,6 +57,9 @@ namespace org.apimiroc.core.config
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IProviderRepository, ProviderRepository>();
+            services.AddScoped<IConstructionRepository, ConstructionRepository>();
+            services.AddScoped<IConceptRepository, ConceptRepository>();
+            services.AddScoped<IMovementRepository, MovementRepository>();
 
             // Paginaciones
             services.AddScoped<IPaginationRepository, PaginationRepository>();
@@ -68,6 +71,9 @@ namespace org.apimiroc.core.config
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IProviderService, ProviderService>();
+            services.AddScoped<IConstructionService, ConstructionService>();
+            services.AddScoped<IConceptService, ConceptService>();
+            services.AddScoped<IMovementService, MovementService>();
 
             return services;
 

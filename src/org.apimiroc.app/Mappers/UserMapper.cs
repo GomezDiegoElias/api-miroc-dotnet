@@ -1,4 +1,5 @@
 ﻿using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 using org.apimiroc.core.shared.Utils;

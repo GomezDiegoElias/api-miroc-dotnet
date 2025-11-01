@@ -1,17 +1,14 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
-using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace org.apimiroc.app.Controllers
 {
@@ -62,6 +59,15 @@ namespace org.apimiroc.app.Controllers
         public async Task<ActionResult<StandardResponse<ClientResponse>>> FindClientByDni(long dni)
         {
             var client = await _clientService.FindByDni(dni);
+            var response = ClientMapper.ToResponse(client!);
+            return Ok(new StandardResponse<ClientResponse>(true, "Cliente obtenido exitosamente", response));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<ClientResponse>>> FindClientById(string id)
+        {
+            var client = await _clientService.FindById(id);
             var response = ClientMapper.ToResponse(client!);
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente obtenido exitosamente", response));
         }
@@ -182,6 +188,38 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente actualizado parcialmente con exito", response));
 
         }
+
+        //[HttpGet("movements")]
+        //public async Task<ActionResult<StandardResponse<List<ClientMovementResponse>>>> FindAllMovemets()
+        //{
+
+        //    var movements = await _clientService.FindAllMovementsClients();
+
+        //    var response = movements.Select(m => ClientMapper.ToMovementResponse(m)).ToList();
+
+        //    return Ok(new StandardResponse<List<ClientMovementResponse>>(
+        //        true,
+        //        "Movimientos de clientes obtenidos exitosamente",
+        //        response
+        //    ));
+
+        //}
+
+        //[HttpGet("{dni:long}/movements")]
+        //public async Task<ActionResult<StandardResponse<List<ClientMovementResponse>>>> FindAllMovemets(long dni)
+        //{
+
+        //    var movements = await _clientService.FindAllMovementsClientByDni(dni);
+
+        //    var response = movements.Select(m => ClientMapper.ToMovementResponse(m)).ToList();
+
+        //    return Ok(new StandardResponse<List<ClientMovementResponse>>(
+        //        true,
+        //        "Movimientos de clientes obtenidos exitosamente",
+        //        response
+        //    ));
+
+        //}
 
     }
 }

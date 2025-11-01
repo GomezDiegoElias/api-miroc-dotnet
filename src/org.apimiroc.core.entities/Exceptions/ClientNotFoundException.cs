@@ -3,6 +3,6 @@
     public class ClientNotFoundException : Exception
     {
         public ClientNotFoundException(string dni)
-            : base($"Cliente con DNI {dni} no existe") { }
+            : base($"Error: Cliente buscado por {dni} no existe") { }
     }
 }

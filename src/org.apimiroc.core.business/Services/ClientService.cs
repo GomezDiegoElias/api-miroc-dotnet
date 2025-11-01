@@ -33,10 +33,27 @@ namespace org.apimiroc.core.business.Services
             return await _clientRepository.FindAll(filters);
         }
 
+        //public async Task<List<Movement>> FindAllMovementsClientByDni(long dni)
+        //{
+        //    var client = await FindByDni(dni);
+        //    return await _clientRepository.FindAllMovementsClientById(client!.Id);
+        //}
+
+        //public async Task<List<Movement>> FindAllMovementsClients()
+        //{
+        //    return await _clientRepository.FindAllMovementsClients();
+        //}
+
         public async Task<Client?> FindByDni(long dni)
         {
             return await _clientRepository.FindByDni(dni)
                 ?? throw new ClientNotFoundException(dni.ToString());
+        }
+
+        public async Task<Client?> FindById(string id)
+        {
+            return await _clientRepository.FindById(id) 
+                ?? throw new ClientNotFoundException(id);
         }
 
         public async Task<Client> Save(ClientRequest request)

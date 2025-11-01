@@ -65,6 +65,15 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<ProviderResponse>>> FindProviderById(string id)
+        {
+            var provider = await _providerService.FindById(id);
+            var response = ProviderMapper.ToResponse(provider);
+            return Ok(new StandardResponse<ProviderResponse>(true, "Proveedor obtenido exitosamente", response));
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> CreatedProvider(
             [FromBody] ProviderRequest request

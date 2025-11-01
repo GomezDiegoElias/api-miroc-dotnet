@@ -30,6 +30,8 @@ namespace org.apimiroc.core.config
                             ClientNotFoundException => 404,
                             EmployeeNotFoundException => 404,
                             ProviderNotFoundException => 404,
+                            ConceptNotFoundException => 404,
+                            MovementNotFoundException => 404,
                             _ => 500
                         };
 

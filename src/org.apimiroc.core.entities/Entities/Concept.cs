@@ -24,6 +24,9 @@ namespace org.apimiroc.core.entities.Entities
         [MaxLength(250)]
         public string Description { get; set; }
 
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
+
         [InverseProperty("Concept")]
         public ICollection<Movement> Movements { get; set; } = new List<Movement>();
 

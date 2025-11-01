@@ -39,6 +39,11 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new ProviderNotFoundException(cuit.ToString());
         }
 
+        public async Task<Provider?> FindById(string id)
+        {
+            return await _providerRepository.FindById(id);
+        }
+
         public async Task<Provider> Save(ProviderRequest request)
         {
 

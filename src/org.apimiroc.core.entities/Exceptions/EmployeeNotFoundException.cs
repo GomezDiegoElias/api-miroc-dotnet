@@ -2,7 +2,7 @@
 {
     public class EmployeeNotFoundException : Exception
     {
-        public EmployeeNotFoundException(long dni)
-            : base($"Empleado con DNI {dni} no existe.") { }
+        public EmployeeNotFoundException(string dni)
+            : base($"Error: Empleado buscado por {dni} no existe.") { }
     }
 }

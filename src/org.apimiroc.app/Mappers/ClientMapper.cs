@@ -1,6 +1,7 @@
 ﻿using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.app.Mappers
 {
@@ -26,6 +27,19 @@ namespace org.apimiroc.app.Mappers
         {
             return new Client(client.Id, request.Dni, request.FirstName, request.Address);
         }
+        
+        //public static ClientMovementResponse ToMovementResponse (Movement movement)
+        //{
+        //    return new ClientMovementResponse(
+        //        CodeMovement: movement.CodMovement,
+        //        Date: movement.Date,
+        //        Amount: movement.Amount,
+        //        PaymentMethod: movement.PaymentMethod.ToString(),
+        //        ConceptName: movement.Concept?.Name ?? "Concepto eliminado",
+        //        Dni: movement.Client?.Dni ?? 0,
+        //        FullName: movement.Client?.FirstName is null ? "Sin cliente" : $"{movement.Client.FirstName}"
+        //    );
+        //}
 
     }
 }

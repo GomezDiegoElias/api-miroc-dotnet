@@ -116,5 +116,31 @@ namespace org.apimiroc.core.data.Repositories
             return existingEntity;
 
         }
+
+        //public async Task<List<Movement>> FindAllMovementsClients()
+        //{
+        //    return await _context.Movements
+        //        .Include(m => m.Concept)
+        //        .Include(m => m.Client)
+        //        .Where(m => m.ClientId != null) // trae solo los movimientos de clientes
+        //        .IgnoreQueryFilters() // Ignora filtros globales de borrado lógico en concepto, cliente
+        //        .ToListAsync();
+        //}
+
+        //public async Task<List<Movement>> FindAllMovementsClientById(string id)
+        //{
+        //    return await _context.Movements
+        //        .Include(m => m.Concept)
+        //        .Include(m => m.Client)
+        //        .Where(m => m.Client != null && m.Client.Id == id) // trae solo los movimientos de clientes con el dni especificado
+        //        .IgnoreQueryFilters() // Ignora filtros globales de borrado lógico en concepto, cliente
+        //        .ToListAsync()
+        //        ?? throw new MovementNotFoundException($"No se encontró movimientos");
+        //}
+
+        public async Task<Client?> FindById(string id)
+        {
+            return await _context.Clients.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

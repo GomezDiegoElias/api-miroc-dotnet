@@ -79,6 +79,10 @@ namespace org.apimiroc.core.data.Migrations
                         .HasColumnType("nvarchar(250)")
                         .HasColumnName("description");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_deleted");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -216,6 +220,10 @@ namespace org.apimiroc.core.data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("concept_id");
 
+                    b.Property<string>("ConstructionId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("construction_id");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2")
                         .HasColumnName("date");
@@ -223,6 +231,10 @@ namespace org.apimiroc.core.data.Migrations
                     b.Property<string>("EmployeeId")
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("employee_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_deleted");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int")
@@ -236,7 +248,12 @@ namespace org.apimiroc.core.data.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("CodMovement")
+                        .IsUnique();
+
                     b.HasIndex("ConceptId");
+
+                    b.HasIndex("ConstructionId");
 
                     b.HasIndex("EmployeeId");
 
@@ -439,6 +456,11 @@ namespace org.apimiroc.core.data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("org.apimiroc.core.entities.Entities.Construction", "Construction")
+                        .WithMany("Movements")
+                        .HasForeignKey("ConstructionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("org.apimiroc.core.entities.Entities.Employee", "Employee")
                         .WithMany("Movements")
                         .HasForeignKey("EmployeeId")
@@ -452,6 +474,8 @@ namespace org.apimiroc.core.data.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Concept");
+
+                    b.Navigation("Construction");
 
                     b.Navigation("Employee");
 
@@ -494,6 +518,11 @@ namespace org.apimiroc.core.data.Migrations
                 });
 
             modelBuilder.Entity("org.apimiroc.core.entities.Entities.Concept", b =>
+                {
+                    b.Navigation("Movements");
+                });
+
+            modelBuilder.Entity("org.apimiroc.core.entities.Entities.Construction", b =>
                 {
                     b.Navigation("Movements");
                 });

@@ -2,6 +2,7 @@
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared;
 using org.apimiroc.core.shared.Dto.Request;

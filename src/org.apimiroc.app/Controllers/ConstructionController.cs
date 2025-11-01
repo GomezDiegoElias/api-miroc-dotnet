@@ -56,10 +56,19 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{name}")]
+        [HttpGet("by-name/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindConstructionByName(string name)
         {
             var construction = await _constructionService.FindByName(name);
+            var response = ConstructionMapper.ToResponse(construction!);
+            return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción obtenida exitosamente", response));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindConstructionById(string id)
+        {
+            var construction = await _constructionService.FindById(id);
             var response = ConstructionMapper.ToResponse(construction!);
             return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción obtenida exitosamente", response));
         }
