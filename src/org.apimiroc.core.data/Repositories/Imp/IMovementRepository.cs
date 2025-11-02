@@ -12,5 +12,6 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<Movement> FindById(string id);
         public Task<Movement> Update(Movement movement);
         public Task<Movement> UpdatePartial(Movement movement);
+        public Task DeleteLogic(Movement movement);
     }
 }

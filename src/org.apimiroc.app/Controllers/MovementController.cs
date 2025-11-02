@@ -119,5 +119,31 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<StandardResponse<object>>> DeleteMovementById(string id)
+        {
+            await _service.DeleteById(id);
+            return Ok(new StandardResponse<object>(
+                true,
+                "Movimiento eliminado exitosamente",
+                null,
+                null,
+                200
+            ));
+        }
+
+        [HttpDelete("{code:int}")]
+        public async Task<ActionResult<StandardResponse<object>>> DeleteMovementByCode(int code)
+        {
+            await _service.DeleteByCode(code);
+            return Ok(new StandardResponse<object>(
+                true,
+                "Movimiento eliminado exitosamente",
+                null,
+                null,
+                200
+            ));
+        }
+
     }
 }
