@@ -65,10 +65,19 @@ namespace org.apimiroc.app.Controllers
             var movements = await _service.FindAll(filters);
             var response = movements.Items.Select(m => MovementMapper.ToResponse(m)).ToList();
 
-            return Ok(new StandardResponse<List<MovementResponse>>(
+            var paginatedResponse = new PaginatedResponse<MovementResponse>
+            {
+                Items = response,
+                PageIndex = movements.PageIndex,
+                PageSize = movements.PageSize,
+                TotalItems = movements.TotalItems,
+                TotalPages = movements.TotalPages
+            };
+
+            return Ok(new StandardResponse<PaginatedResponse<MovementResponse>>(
                 true,
                 "Movimientos obtenidos exitosamente",
-                response,
+                paginatedResponse,
                 null,
                 200
             ));
