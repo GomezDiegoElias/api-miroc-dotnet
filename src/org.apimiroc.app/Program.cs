@@ -17,7 +17,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.WithThreadId()         // ID del hilo
         .Enrich.WithExceptionDetails() // Excepciones enriquecidas
         .WriteTo.Console(
-            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] ({MachineName}/{ThreadId}) {Message:lj}{NewLine}{Exception}"
+            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext} ({MachineName}/{ThreadId}) {Message:lj}{NewLine}{Exception}"
         )
         .WriteTo.File(
             path: "../logs/log-.txt",             // Carpeta fuera del proyecto
@@ -90,3 +90,5 @@ app.MapGet("/", (ILogger<Program> logger) =>
 
 app.MapControllers().RequireRateLimiting("fijo");
 app.Run();
+
+public partial class Program { }
