@@ -19,6 +19,12 @@ namespace org.apimiroc.core.data.Repositories
             _paginationRepository = paginationRepository;
         }
 
+        public async Task DeleteLogic(Movement movement)
+        {
+            movement.IsDeleted = true;
+            await _context.SaveChangesAsync();
+        }
+
         // Obtener todos los movimientos, incluyendo los eliminados logicamente
         // en caso de que se quiera excluirlos, se deberia eliminar el .IgnoreQueryFilters()
         // tiene sentido si para historial contable o auditoria

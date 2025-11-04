@@ -12,5 +12,7 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<Movement> FindById(string id);
         public Task<Movement> Update(Movement movement, int code);
         public Task<Movement> UpdatePartial(Movement movement, int code);
+        public Task DeleteById(string id);
+        public Task DeleteByCode(int code);
     }
 }

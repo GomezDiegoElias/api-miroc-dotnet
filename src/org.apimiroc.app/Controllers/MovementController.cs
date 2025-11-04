@@ -65,10 +65,19 @@ namespace org.apimiroc.app.Controllers
             var movements = await _service.FindAll(filters);
             var response = movements.Items.Select(m => MovementMapper.ToResponse(m)).ToList();
 
-            return Ok(new StandardResponse<List<MovementResponse>>(
+            var paginatedResponse = new PaginatedResponse<MovementResponse>
+            {
+                Items = response,
+                PageIndex = movements.PageIndex,
+                PageSize = movements.PageSize,
+                TotalItems = movements.TotalItems,
+                TotalPages = movements.TotalPages
+            };
+
+            return Ok(new StandardResponse<PaginatedResponse<MovementResponse>>(
                 true,
                 "Movimientos obtenidos exitosamente",
-                response,
+                paginatedResponse,
                 null,
                 200
             ));
@@ -117,6 +126,32 @@ namespace org.apimiroc.app.Controllers
                 200
             ));
 
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<StandardResponse<object>>> DeleteMovementById(string id)
+        {
+            await _service.DeleteById(id);
+            return Ok(new StandardResponse<object>(
+                true,
+                "Movimiento eliminado exitosamente",
+                null,
+                null,
+                200
+            ));
+        }
+
+        [HttpDelete("{code:int}")]
+        public async Task<ActionResult<StandardResponse<object>>> DeleteMovementByCode(int code)
+        {
+            await _service.DeleteByCode(code);
+            return Ok(new StandardResponse<object>(
+                true,
+                "Movimiento eliminado exitosamente",
+                null,
+                null,
+                200
+            ));
         }
 
     }

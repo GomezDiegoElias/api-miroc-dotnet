@@ -17,6 +17,18 @@ namespace org.apimiroc.core.business.Services
             _repository = repository;
         }
 
+        public async Task DeleteByCode(int code)
+        {
+            var movement = await FindByCode(code);
+            await _repository.DeleteLogic(movement);
+        }
+
+        public async Task DeleteById(string id)
+        {
+            var movement = await FindById(id);
+            await _repository.DeleteLogic(movement);
+        }
+
         public async Task<PaginatedResponse<Movement>> FindAll(MovementFilter filters)
         {
             return await _repository.FindAll(filters);

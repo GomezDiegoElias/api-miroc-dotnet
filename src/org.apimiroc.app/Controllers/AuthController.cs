@@ -16,16 +16,19 @@ namespace org.apimiroc.app.Controllers
         private readonly IAuthService _authService;
         private readonly IValidator<RegisterRequest> _registerValidator;
         private readonly IValidator<LoginRequest> _loginValidator;
+        private ILogger<AuthController> _logger;
 
         public AuthController(
-            IAuthService authService, 
+            IAuthService authService,
             IValidator<RegisterRequest> registerRequest,
-            IValidator<LoginRequest> loginRequest
+            IValidator<LoginRequest> loginRequest,
+            ILogger<AuthController> logger
         )
         {
             _authService = authService;
             _registerValidator = registerRequest;
             _loginValidator = loginRequest;
+            _logger = logger;
         }
 
         [HttpPost("register")]
@@ -55,16 +58,21 @@ namespace org.apimiroc.app.Controllers
         public async Task<ActionResult<StandardResponse<AuthResponse>>> Login([FromBody] LoginRequest request)
         {
 
+            _logger.LogInformation("Intento de login para email: {Email}", request.Email);
+
             var validationResult = await _loginValidator.ValidateAsync(request);
 
             if (!validationResult.IsValid)
             {
                 var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
+                _logger.LogWarning("Validacion fallida en login: {Errors}", validationErrors);
+
                 var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
                 return new StandardResponse<AuthResponse>(false, "Ah ocurrido un error", null, errors, 400);
             }
 
             var loginResponse = await _authService.Login(request);
+            _logger.LogInformation("Usuario logeado exitosamente: {Email}", request.Email);
 
             var response = new StandardResponse<AuthResponse>(true, "Inicio de sesion exitoso", loginResponse);
 
