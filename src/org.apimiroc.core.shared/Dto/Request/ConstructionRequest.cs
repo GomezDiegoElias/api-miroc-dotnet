@@ -5,7 +5,8 @@
         DateTime StartDate,
         DateTime EndDate,
         string Address,
-        string Description
+        string Description,
+        string ClientId
     )
     { }
 }

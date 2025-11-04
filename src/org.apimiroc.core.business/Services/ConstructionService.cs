@@ -61,7 +61,8 @@ namespace org.apimiroc.core.business.Services
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
                 Address = request.Address,
-                Description = request.Description
+                Description = request.Description,
+                ClientId = request.ClientId
             };
 
             var saveConstruction = await _constructionRepository.Save(newConstruction);
