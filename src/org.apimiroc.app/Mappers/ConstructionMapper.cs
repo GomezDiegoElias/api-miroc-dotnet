@@ -9,22 +9,51 @@ namespace org.apimiroc.app.Mappers
 
         public static ConstructionResponse ToResponse(Construction construction)
         {
-            return new ConstructionResponse(construction.Name, construction.StartDate, construction.EndDate, construction.Address, construction.Description);
+            return new ConstructionResponse(
+                construction.Name,
+                construction.StartDate,
+                construction.EndDate,
+                construction.Address,
+                construction.Description
+            );
         }
 
         public static ConstructionRequest ToRequest(Construction construction)
         {
-            return new ConstructionRequest(construction.Name, construction.StartDate, construction.EndDate, construction.Address, construction.Description);
+            return new ConstructionRequest(
+                construction.Name,
+                construction.StartDate,
+                construction.EndDate,
+                construction.Address,
+                construction.Description,
+                construction.ClientId
+            );
         }
 
         public static Construction ToEntityForUpdate(ConstructionRequest request, Construction construction)
         {
-            return new Construction(construction.Id, request.Name, request.StartDate, request.EndDate, request.Address, request.Description);
+            return new Construction(
+                construction.Id,
+                request.Name,
+                request.StartDate,
+                request.EndDate,
+                request.Address,
+                request.Description,
+                request.ClientId
+            );
         }
 
         public static Construction ToEntityForPatch(ConstructionRequest request, Construction construction)
         {
-            return new Construction(construction.Id, request.Name, request.StartDate, request.EndDate, request.Address, request.Description);
+            return new Construction(
+                construction.Id,
+                request.Name,
+                request.StartDate,
+                request.EndDate,
+                request.Address,
+                request.Description,
+                request.ClientId
+            );
         }
 
     }

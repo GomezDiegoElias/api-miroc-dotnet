@@ -99,6 +99,16 @@ namespace org.apimiroc.core.data
 
             // CONSTRUCTION
 
+        
+
+            // client 1:n Construction
+
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Constructions)
+                .WithOne(cn => cn.Client)
+                .HasForeignKey(cn => cn.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // CONCEPT
             //modelBuilder.Entity<Concept>()
             //    .HasIndex(c => c.Id)

@@ -45,12 +45,20 @@ namespace org.apimiroc.core.entities.Entities
         [Column("update_at")]
         public DateTime UpdateAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") != null ? DateTime.Now : DateTime.Now;
 
+        [Required]
+        [Column("cient_id")]
+        public string ClientId { get; set; }
+
+        // Propiedad de navegación
+        [ForeignKey(nameof(ClientId))]
+        public Client Client { get; set; }
+
         [InverseProperty(nameof(Movement.Construction))]
         public ICollection<Movement> Movements { get; set; } = new List<Movement>();
 
         public Construction() { }
 
-        public Construction(string id, string name, DateTime startDate, DateTime endDate, string address, string description)
+        public Construction(string id, string name, DateTime startDate, DateTime endDate, string address, string description, string clientId)
         {
             Id = id;
             Name = name;
@@ -58,6 +66,7 @@ namespace org.apimiroc.core.entities.Entities
             EndDate = endDate;
             Address = address;
             Description = description;
+            ClientId = clientId;
         }
 
         public static string GenerateId()
