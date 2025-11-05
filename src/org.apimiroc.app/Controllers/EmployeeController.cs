@@ -1,11 +1,8 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
-using org.apimiroc.app.Validations;
-using org.apimiroc.core.business.Services;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
@@ -20,15 +17,10 @@ namespace org.apimiroc.app.Controllers
     {
 
         private readonly IEmployeeService _employeeService;
-        private readonly IValidator<EmployeeRequest> _employeeValidation;
 
-        public EmployeeController(
-            IEmployeeService employeeService,
-            IValidator<EmployeeRequest> employeeValidation    
-        )
+        public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
-            _employeeValidation = employeeValidation;
         }
 
         [AllowAnonymous]
@@ -57,7 +49,7 @@ namespace org.apimiroc.app.Controllers
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindEmployeeByDni(long dni)
         {
             var employee = await _employeeService.FindByDni(dni);
-            var response = EmployeeMapper.ToResponse(employee);
+            var response = EmployeeMapper.ToResponse(employee!);
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado obtenido exitosamente", response));
         }
 
@@ -66,7 +58,7 @@ namespace org.apimiroc.app.Controllers
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindEmployeeById(string id)
         {
             var employee = await _employeeService.FindById(id);
-            var response = EmployeeMapper.ToResponse(employee);
+            var response = EmployeeMapper.ToResponse(employee!);
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado obtenido exitosamente", response));
         }
 
@@ -75,20 +67,17 @@ namespace org.apimiroc.app.Controllers
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> SaveEmployee([FromBody] EmployeeRequest request)
         {
 
-            var validationResult = await _employeeValidation.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<EmployeeResponse>(false, "Ah ocurrido un error", null, errors, 400);
-            }
-
             var employeeToCreate = EmployeeMapper.ToEntity(request);
             var newEmployee = await _employeeService.Save(employeeToCreate);
             var response = EmployeeMapper.ToResponse(newEmployee);
 
-            return Created(string.Empty, new StandardResponse<EmployeeResponse>(true, "Empleado creado correctamente", response, null, 201));
+            return Created(string.Empty, new StandardResponse<EmployeeResponse>(
+                true, 
+                "Empleado creado correctamente", 
+                response, 
+                null, 
+                201
+            ));
 
         }
 
@@ -121,16 +110,6 @@ namespace org.apimiroc.app.Controllers
         {
 
             var existingClient = await _employeeService.FindByDni(dni);
-
-            var validationResult = await _employeeValidation.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<EmployeeResponse>(false, "Ah ocurrido un error", null, errors, 400);
-            }
-
             var employeeToUpdate = EmployeeMapper.ToEntityForUpdate(request, existingClient!);
 
             var updatedEmployee = await _employeeService.Update(employeeToUpdate, dni);
