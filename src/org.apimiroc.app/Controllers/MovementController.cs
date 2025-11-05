@@ -16,28 +16,15 @@ namespace org.apimiroc.app.Controllers
     {
 
         private readonly IMovementService _service;
-        private readonly IConceptService _serviceConcept;
-        private readonly IValidator<MovementRequest> _movementValidation;
 
-        public MovementController(IMovementService service, IValidator<MovementRequest> movementValidation, IConceptService serviceConcept)
+        public MovementController(IMovementService service)
         {
             _service = service;
-            _movementValidation = movementValidation;
-            _serviceConcept = serviceConcept;
         }
 
         [HttpPost]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> SaveMovemente([FromBody] MovementRequest request)
         {
-
-            var validationResult = await _movementValidation.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return BadRequest(new StandardResponse<MovementResponse>(false, "Ah ocurrido un error", null, errors, 400));
-            }
 
             var movementCaptured = MovementMapper.ToEntity(request);
             var movementSaved = await _service.Save(movementCaptured);
