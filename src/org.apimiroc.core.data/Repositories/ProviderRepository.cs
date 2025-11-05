@@ -47,6 +47,11 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
+        public async Task<bool> ExistCuit(long cuit)
+        {
+            return await _context.Providers.AnyAsync(x => x.Cuit == cuit);
+        }
+
         // cuit, first_name, address
 
         public async Task<PaginatedResponse<Provider>> FindAll(ProviderFilter filters)
