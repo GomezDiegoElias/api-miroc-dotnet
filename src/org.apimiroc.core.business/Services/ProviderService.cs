@@ -44,25 +44,11 @@ namespace org.apimiroc.core.business.Services
             return await _providerRepository.FindById(id);
         }
 
-        public async Task<Provider> Save(ProviderRequest request)
+        public async Task<Provider> Save(Provider provider)
         {
-
             // Validaciones
-            if (await _providerRepository.ExistCuit(request.Cuit)) throw new ProviderNotFoundException($"El CUIT ingresado {request.Cuit} ya existe");
-
-            var newProvider = new Provider
-            {
-                Id = Provider.GenerateId(),
-                Cuit = request.Cuit,
-                FirstName = request.FirstName,
-                Address = request.Address,
-                Description = request.Description
-            };
-
-            var saveProvider = await _providerRepository.Save(newProvider);
-
-            return saveProvider;
-
+            if (await _providerRepository.ExistCuit(provider.Cuit)) throw new ProviderNotFoundException($"El CUIT ingresado {provider.Cuit} ya existe");
+            return await _providerRepository.Save(provider);
         }
 
         public async Task<Provider> Update(Provider provider, long cuitLong)
