@@ -10,11 +10,10 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<PaginatedResponse<Client>> FindAll(ClientFilter filters);
         public Task<Client?> FindByDni(long dni);
         public Task<Client?> FindById(string id);
-        public Task<Client> Save(ClientRequest request);
+        public Task<Client> Save(Client client);
         public Task<Client> Update(Client client, long dniOld);
         public Task<Client> DeletePermanent(long dni);
         public Task<Client> DeleteLogic(long dni);
         public Task<Client> UpdatePartial(Client client, long dniOld);
-        //public Task<bool> ExistDni(long dni);
     }
 }

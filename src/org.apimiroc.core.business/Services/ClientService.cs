@@ -45,23 +45,13 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new ClientNotFoundException(id);
         }
 
-        public async Task<Client> Save(ClientRequest request)
+        public async Task<Client> Save(Client client)
         {
 
             // Validaciones
-            if (await _clientRepository.ExistDni(request.Dni)) throw new ClientNotFoundException($"El DNI ingresado ya existe");
+            if (await _clientRepository.ExistDni(client.Dni)) throw new ClientNotFoundException($"El DNI ingresado {client.Dni} ya existe");
 
-            var newClient = new Client
-            {
-                Id = Client.GenerateId(),
-                Dni = request.Dni,
-                FirstName = request.FirstName,
-                Address = request.Address
-            };
-
-            var saveClient = await _clientRepository.Save(newClient);
-
-            return saveClient;
+            return await _clientRepository.Save(client);
 
         }
 
