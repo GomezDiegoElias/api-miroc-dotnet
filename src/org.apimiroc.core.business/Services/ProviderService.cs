@@ -36,7 +36,7 @@ namespace org.apimiroc.core.business.Services
         public async Task<Provider?> FindByCuit(long cuit)
         {
             return await _providerRepository.FindByCuit(cuit)
-                ?? throw new ProviderNotFoundException(cuit.ToString());
+                ?? throw new ProviderNotFoundException(cuit);
         }
 
         public async Task<Provider?> FindById(string id)
@@ -44,24 +44,11 @@ namespace org.apimiroc.core.business.Services
             return await _providerRepository.FindById(id);
         }
 
-        public async Task<Provider> Save(ProviderRequest request)
+        public async Task<Provider> Save(Provider provider)
         {
-
             // Validaciones
-
-            var newProvider = new Provider
-            {
-                Id = Provider.GenerateId(),
-                Cuit = request.Cuit,
-                FirstName = request.FirstName,
-                Address = request.Address,
-                Description = request.Description
-            };
-
-            var saveProvider = await _providerRepository.Save(newProvider);
-
-            return saveProvider;
-
+            if (await _providerRepository.ExistCuit(provider.Cuit)) throw new ProviderNotFoundException($"El CUIT ingresado {provider.Cuit} ya existe");
+            return await _providerRepository.Save(provider);
         }
 
         public async Task<Provider> Update(Provider provider, long cuitLong)

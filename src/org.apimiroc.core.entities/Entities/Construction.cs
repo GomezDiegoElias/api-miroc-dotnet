@@ -46,7 +46,7 @@ namespace org.apimiroc.core.entities.Entities
         public DateTime UpdateAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") != null ? DateTime.Now : DateTime.Now;
 
         [Required]
-        [Column("cient_id")]
+        [Column("client_id")]
         public string ClientId { get; set; }
 
         // Propiedad de navegación

@@ -14,5 +14,6 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<Employee> UpdatePartial(Employee employee, long dniOld);
         public Task<Employee> DeletePermanent(long dni);
         public Task<Employee> DeleteLogic(long dni);
+        public Task<bool> ExistDni(long dni);
     }
 }

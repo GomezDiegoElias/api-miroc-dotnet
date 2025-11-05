@@ -88,8 +88,9 @@ namespace org.apimiroc.app.Controllers
                 var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
                 return new StandardResponse<ProviderResponse>(false, "Ah ocurrido un error", null, errors, 400);
             }
-
-            var newProvider = await _providerService.Save(request);
+        
+            var providerToCreate = ProviderMapper.ToEntity(request);
+            var newProvider = await _providerService.Save(providerToCreate);
             var response = ProviderMapper.ToResponse(newProvider);
 
             return Created(string.Empty, new StandardResponse<ProviderResponse>(true, "Proveedor creado exitosamente", response, null, 201));

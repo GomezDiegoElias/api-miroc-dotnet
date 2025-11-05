@@ -84,7 +84,8 @@ namespace org.apimiroc.app.Controllers
                 return new StandardResponse<EmployeeResponse>(false, "Ah ocurrido un error", null, errors, 400);
             }
 
-            var newEmployee = await _employeeService.Save(request);
+            var employeeToCreate = EmployeeMapper.ToEntity(request);
+            var newEmployee = await _employeeService.Save(employeeToCreate);
             var response = EmployeeMapper.ToResponse(newEmployee);
 
             return Created(string.Empty, new StandardResponse<EmployeeResponse>(true, "Empleado creado correctamente", response, null, 201));

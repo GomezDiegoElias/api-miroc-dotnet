@@ -88,7 +88,8 @@ namespace org.apimiroc.app.Controllers
                 return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
             }
 
-            var newUser = await _clientService.Save(request);
+            var clientToCreate = ClientMapper.ToEntity(request);
+            var newUser = await _clientService.Save(clientToCreate);
             var response = ClientMapper.ToResponse(newUser);
 
             return Created(string.Empty, new StandardResponse<ClientResponse>(true, "Cliente creado exitosamente", response, null, 201));

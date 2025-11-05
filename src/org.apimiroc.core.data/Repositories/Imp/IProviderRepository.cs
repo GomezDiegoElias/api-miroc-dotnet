@@ -14,5 +14,6 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<Provider> DeletePermanent(long cuit);
         public Task<Provider> DeleteLogic(long cuit);
         public Task<Provider> UpdatePartial(Provider provider, long cuitOld);
+        public Task<bool> ExistCuit(long cuit);
     }
 }

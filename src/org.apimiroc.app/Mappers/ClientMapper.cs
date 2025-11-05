@@ -8,6 +8,11 @@ namespace org.apimiroc.app.Mappers
     public static class ClientMapper
     {
 
+        public static Client ToEntity(ClientRequest request)
+        {
+            return new Client(Client.GenerateId(), request.Dni, request.FirstName, request.Address);
+        }
+
         public static ClientResponse ToResponse(Client client)
         {
             return new ClientResponse(client.Dni, client.FirstName, client.Address);
@@ -27,19 +32,7 @@ namespace org.apimiroc.app.Mappers
         {
             return new Client(client.Id, request.Dni, request.FirstName, request.Address);
         }
-        
-        //public static ClientMovementResponse ToMovementResponse (Movement movement)
-        //{
-        //    return new ClientMovementResponse(
-        //        CodeMovement: movement.CodMovement,
-        //        Date: movement.Date,
-        //        Amount: movement.Amount,
-        //        PaymentMethod: movement.PaymentMethod.ToString(),
-        //        ConceptName: movement.Concept?.Name ?? "Concepto eliminado",
-        //        Dni: movement.Client?.Dni ?? 0,
-        //        FullName: movement.Client?.FirstName is null ? "Sin cliente" : $"{movement.Client.FirstName}"
-        //    );
-        //}
+ 
 
     }
 }

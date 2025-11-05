@@ -7,6 +7,11 @@ namespace org.apimiroc.app.Mappers
     public static class ProviderMapper
     {
 
+        public static Provider ToEntity(ProviderRequest request)
+        {
+            return new Provider(Provider.GenerateId(), request.Cuit, request.FirstName, request.Address, request.Description);
+        }
+
         public static ProviderResponse ToResponse(Provider provider)
         {
             return new ProviderResponse(provider.Cuit, provider.FirstName, provider.Address, provider.Description);

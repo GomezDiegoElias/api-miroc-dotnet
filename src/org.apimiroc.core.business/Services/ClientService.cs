@@ -33,17 +33,6 @@ namespace org.apimiroc.core.business.Services
             return await _clientRepository.FindAll(filters);
         }
 
-        //public async Task<List<Movement>> FindAllMovementsClientByDni(long dni)
-        //{
-        //    var client = await FindByDni(dni);
-        //    return await _clientRepository.FindAllMovementsClientById(client!.Id);
-        //}
-
-        //public async Task<List<Movement>> FindAllMovementsClients()
-        //{
-        //    return await _clientRepository.FindAllMovementsClients();
-        //}
-
         public async Task<Client?> FindByDni(long dni)
         {
             return await _clientRepository.FindByDni(dni)
@@ -56,22 +45,13 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new ClientNotFoundException(id);
         }
 
-        public async Task<Client> Save(ClientRequest request)
+        public async Task<Client> Save(Client client)
         {
 
             // Validaciones
+            if (await _clientRepository.ExistDni(client.Dni)) throw new ClientNotFoundException($"El DNI ingresado {client.Dni} ya existe");
 
-            var newClient = new Client
-            {
-                Id = Client.GenerateId(),
-                Dni = request.Dni,
-                FirstName = request.FirstName,
-                Address = request.Address
-            };
-
-            var saveClient = await _clientRepository.Save(newClient);
-
-            return saveClient;
+            return await _clientRepository.Save(client);
 
         }
 
