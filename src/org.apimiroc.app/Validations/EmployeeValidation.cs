@@ -18,7 +18,7 @@ namespace org.apimiroc.app.Validations
                 .MaximumLength(50).WithMessage("El apellido no puede exceder los 50 caracteres");
             RuleFor(x => x.WorkStation)
                 .NotEmpty().WithMessage("El puesto de trabajo es obligatorio")
-                .MaximumLength(50).WithMessage("El nombre del puesto de trabajo no puede exceder los 50 caracteres");
+                .MaximumLength(10).WithMessage("El nombre del puesto de trabajo no puede exceder los 10 caracteres");
         }
     }
 }
