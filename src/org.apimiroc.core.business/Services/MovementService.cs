@@ -2,9 +2,11 @@
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
+using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
+using org.apimiroc.core.shared.Dto.Request;
 
 namespace org.apimiroc.core.business.Services
 {
@@ -51,6 +53,11 @@ namespace org.apimiroc.core.business.Services
             await _repository.DeleteLogic(movement);
         }
 
+        public async Task<PaginatedResponse<Movement>> FindAllV2(MovementFilter filters)
+        {
+            return await _repository.FindAllV2(filters);
+        }
+
         public async Task<PaginatedResponse<Movement>> FindAll(MovementFilter filters)
         {
             return await _repository.FindAll(filters);
@@ -68,7 +75,79 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new MovementNotFoundException($"Movimiento con ID {id} no existe");
         }
 
-        public async Task<Movement> Save(Movement movement)
+        public async Task<Movement> Save(MovementRequest request)
+        {
+
+            _logger.LogInformation("Intentando guardar nuevo movimiento");
+
+            _logger.LogInformation("Validando entidades relacionadas para movimiento...");
+
+            Client? client = null;
+            Provider? provider = null;
+            Employee? employee = null;
+            Construction? construction = null;
+
+            if (request.ClientDni != null)
+            {
+                _logger.LogInformation("Buscando cliente con DNI {ClientDni}", request.ClientDni);
+                client = await _clientRepository.FindByDni(request.ClientDni.Value);
+                if (client == null)
+                {
+                    _logger.LogWarning("Cliente con DNI {ClientDni} no encontrado", request.ClientDni);
+                    throw new ClientNotFoundException($"Cliente con DNI {request.ClientDni} no existe");
+                }
+            }
+
+            if (request.ProviderCuit != null)
+            {
+                _logger.LogInformation("Buscando proveedor con CUIT {ProviderCuit}", request.ProviderCuit);
+                provider = await _providerRepository.FindByCuit(request.ProviderCuit.Value);
+                if (provider == null)
+                {
+                    _logger.LogWarning("Proveedor con CUIT {ProviderCuit} no encontrado", request.ProviderCuit);
+                    throw new ProviderNotFoundException($"Proveedor con CUIT {request.ProviderCuit} no existe");
+                }
+            }
+
+            if (request.EmployeeDni != null)
+            {
+                _logger.LogInformation("Buscando empleado con DNI {EmployeeDni}", request.EmployeeDni);
+                employee =  await _employeeRepository.FindByDni(request.EmployeeDni.Value);
+                if (employee == null)
+                {
+                    _logger.LogWarning("Empleado con DNI {EmployeeDni} no encontrado", request.EmployeeDni);
+                    throw new EmployeeNotFoundException($"Empleado con DNI {request.EmployeeDni} no existe");
+                }
+            }
+
+             if (!string.IsNullOrEmpty(request.ConstructionName)) 
+             {
+                construction = await _constructionRepository.FindByName(request.ConstructionName);
+                if (construction == null)
+                {
+                    throw new ConstructionNotFoundException($"Obra con nombre {request.ConstructionName} no existe");
+                }
+             }
+             
+            var movement = new Movement
+            { 
+                Id = Movement.GenerateId(),
+                Amount = request.Amount,
+                Date = DateTime.Now,
+                PaymentMethod = Enum.Parse<PaymentMethod>(request.PaymentMethod),
+                ConceptId = request.ConceptId,
+                ClientId = client?.Id,
+                ProviderId = provider?.Id,
+                EmployeeId = employee?.Id,
+                ConstructionId = construction?.Id,
+            };
+
+            return await _repository.Save(movement);
+
+        }
+
+        // ░░░░░░░░░░░░░░░░░░░░░░░░░░ Version 2 - relaciones con id ░░░░░░░░░░░░░░░░░░░░░░░░░░
+        public async Task<Movement> SaveV2(Movement movement)
         {
 
             // Uso de logs
@@ -85,7 +164,7 @@ namespace org.apimiroc.core.business.Services
             }
 
             // validacion de relaciones que permiten nulos
-            await ValidateMovementRelations(movement);
+            await ValidateMovement(movement);
 
             var result = await _repository.Save(movement);
 
@@ -118,9 +197,11 @@ namespace org.apimiroc.core.business.Services
             throw new NotImplementedException();
         }
 
+
+        // ░░░░░░░░░░░░░░░░░░░░░░░░░░ Validacion usada solo en la version 2 - relacion con id ░░░░░░░░░░░░░░░░░░░░░░░░░░
         // validacion de relaciones que permiten nulos
         // solo ejecuta el await si el id no es nulo, para evitar consultas innecesarias a la base de datos
-        private async Task ValidateMovementRelations(Movement movement)
+        private async Task ValidateMovement(Movement movement)
         {
             // Client
             if (movement.ClientId != null)
