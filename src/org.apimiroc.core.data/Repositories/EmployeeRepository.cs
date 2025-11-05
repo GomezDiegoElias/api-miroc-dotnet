@@ -35,6 +35,11 @@ namespace org.apimiroc.core.data.Repositories
             return existingEntity!;
         }
 
+        public async Task<bool> ExistDni(long dni)
+        {
+            return await _context.Employees.AnyAsync(e => e.Dni == dni);
+        }
+
         public async Task<PaginatedResponse<Employee>> FindAll(EmployeeFilter filters)
         {
 
