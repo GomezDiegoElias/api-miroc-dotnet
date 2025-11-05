@@ -66,14 +66,14 @@ namespace org.apimiroc.app.Filters
 
                 var errorDetails = new ErrorDetails(
                     400,
-                    "Ah ocurrido un error",
+                    "Error de validación",
                     context.HttpContext.Request.Path,
                     string.Join("; ", errors)
                 );
 
                 var response = new StandardResponse<object>(
                     false,
-                    "Error de validación",
+                    "Ah ocurrido un error",
                     null,
                     errorDetails,
                     400
