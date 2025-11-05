@@ -1,4 +1,5 @@
-﻿using org.apimiroc.core.business.Services.Imp;
+﻿using Microsoft.Extensions.Logging;
+using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.data.Repositories.Imp;
 using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Exceptions;
@@ -9,6 +10,8 @@ namespace org.apimiroc.core.business.Services
 {
     public class MovementService : IMovementService
     {
+
+        private readonly ILogger<MovementService> _logger;
 
         private readonly IMovementRepository _repository;
         private readonly IConceptRepository _conceptRepository;
@@ -23,7 +26,9 @@ namespace org.apimiroc.core.business.Services
             IClientRepository clientRepository,
             IProviderRepository providerRepository,
             IEmployeeRepository employeeRepository,
-            IConstructionRepository constructionRepository)
+            IConstructionRepository constructionRepository,
+            ILogger<MovementService> logger
+        )
         {
             _repository = repository;
             _conceptRepository = conceptRepository;
@@ -31,6 +36,7 @@ namespace org.apimiroc.core.business.Services
             _providerRepository = providerRepository;
             _employeeRepository = employeeRepository;
             _constructionRepository = constructionRepository;
+            _logger = logger;
         }
 
         public async Task DeleteByCode(int code)
@@ -65,23 +71,27 @@ namespace org.apimiroc.core.business.Services
         public async Task<Movement> Save(Movement movement)
         {
 
+            // Uso de logs
+            _logger.LogInformation("Intentando guardar nuevo movimiento");
+
+            _logger.LogInformation("Validando entidades relacionadas para movimiento...");
+
             // Validaciones
-            var concept = await _conceptRepository.FindById(movement.ConceptId)
-                ?? throw new ConceptNotFoundException(movement.ConceptId);
+            // validacion de concept id si ejecuta el await por que no permite nulo para la creacion del movimiento
+            if (await _conceptRepository.FindById(movement.ConceptId) == null)
+            {
+                _logger.LogWarning("Concepto con ID {ConceptId} no encontrado", movement.ConceptId);
+                throw new ConceptNotFoundException($"Concepto con ID {movement.ConceptId} no existe");
+            }
 
-            if (movement.ClientId != null && await _clientRepository.FindById(movement.ClientId) == null)
-                throw new ClientNotFoundException($"Cliente con ID {movement.ClientId} no existe");
+            // validacion de relaciones que permiten nulos
+            await ValidateMovementRelations(movement);
 
-            if (movement.EmployeeId != null && await _employeeRepository.FindById(movement.EmployeeId) == null)
-                throw new EmployeeNotFoundException($"Empleado con ID {movement.EmployeeId} no existe");
+            var result = await _repository.Save(movement);
 
-            if (movement.ProviderId != null && await _providerRepository.FindById(movement.ProviderId) == null)
-                throw new ProviderNotFoundException($"Proveedor con ID {movement.ProviderId} no existe");
+            _logger.LogInformation("Movimiento guardado exitosamente con ID {Id}", result.Id);
 
-            if (movement.ConstructionId != null && await _constructionRepository.FindById(movement.ConstructionId) == null)
-                throw new ConstructionNotFoundException($"Obra con ID {movement.ConstructionId} no existe");
-
-            return await _repository.Save(movement);
+            return result;
         
         }
 
@@ -107,5 +117,55 @@ namespace org.apimiroc.core.business.Services
         {
             throw new NotImplementedException();
         }
+
+        // validacion de relaciones que permiten nulos
+        // solo ejecuta el await si el id no es nulo, para evitar consultas innecesarias a la base de datos
+        private async Task ValidateMovementRelations(Movement movement)
+        {
+            // Client
+            if (movement.ClientId != null)
+            {
+                _logger.LogInformation("Validando existencia del cliente con ID {ClientId}", movement.ClientId);
+                if (await _clientRepository.FindById(movement.ClientId) == null)
+                {
+                    _logger.LogWarning("Cliente con ID {ClientId} no encontrado", movement.ClientId);
+                    throw new ClientNotFoundException($"Cliente con ID {movement.ClientId} no existe");
+                }
+            }
+
+            // Employee
+            if (movement.EmployeeId != null)
+            {
+                _logger.LogInformation("Validando existencia del empleado con ID {EmployeeId}", movement.EmployeeId);
+                if (await _employeeRepository.FindById(movement.EmployeeId) == null)
+                {
+                    _logger.LogWarning("Empleado con ID {EmployeeId} no encontrado", movement.EmployeeId);
+                    throw new EmployeeNotFoundException($"Empleado con ID {movement.EmployeeId} no existe");
+                }
+            }
+
+            // Provider
+            if (movement.ProviderId != null)
+            {
+                _logger.LogInformation("Validando existencia del proveedor con ID {ProviderId}", movement.ProviderId);
+                if (await _providerRepository.FindById(movement.ProviderId) == null)
+                {
+                    _logger.LogWarning("Proveedor con ID {ProviderId} no encontrado", movement.ProviderId);
+                    throw new ProviderNotFoundException($"Proveedor con ID {movement.ProviderId} no existe");
+                }
+            }
+            
+            // Construction
+            if (movement.ConstructionId != null)
+            {
+                _logger.LogInformation("Validando existencia de la obra con ID {ConstructionId}", movement.ConstructionId);
+                if (await _constructionRepository.FindById(movement.ConstructionId) == null)
+                {
+                    _logger.LogWarning("Construcción con ID {ConstructionId} no encontrado", movement.ConstructionId);
+                    throw new ConstructionNotFoundException($"Obra con ID {movement.ConstructionId} no existe");
+                }
+            }
+        }
+
     }
 }
