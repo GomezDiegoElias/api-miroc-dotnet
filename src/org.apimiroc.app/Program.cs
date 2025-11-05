@@ -1,5 +1,7 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
+using org.apimiroc.app.Filters;
 using org.apimiroc.app.Validations;
 using org.apimiroc.core.config;
 using Serilog;
@@ -32,7 +34,8 @@ builder.Host.UseSerilog((context, services, configuration) =>
 
 
 // Configuración básica de servicios
-builder.Services.AddControllers()
+// Agrega controladores con filtro de validación personalizado y configuración de JSON
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -40,6 +43,12 @@ builder.Services.AddControllers()
         options.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
+
+// Deshabilita el filtro automático de validación de modelos para usar el filtro personalizado
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 builder.Services.AddCorsPolicy(builder.Configuration);
 

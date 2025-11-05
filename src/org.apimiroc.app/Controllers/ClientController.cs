@@ -18,15 +18,10 @@ namespace org.apimiroc.app.Controllers
     {
 
         private readonly IClientService _clientService;
-        private readonly IValidator<ClientRequest> _clientValidation;
 
-        public ClientController(
-            IClientService clientService,
-            IValidator<ClientRequest> clientValidation    
-        )
+        public ClientController(IClientService clientService)
         {
             _clientService = clientService;
-            _clientValidation = clientValidation;
         }
 
         [AllowAnonymous]
@@ -79,15 +74,6 @@ namespace org.apimiroc.app.Controllers
         )
         {
 
-            var validationResult = await _clientValidation.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
-            }
-
             var clientToCreate = ClientMapper.ToEntity(request);
             var newUser = await _clientService.Save(clientToCreate);
             var response = ClientMapper.ToResponse(newUser);
@@ -127,15 +113,6 @@ namespace org.apimiroc.app.Controllers
 
             var existingClient = await _clientService.FindByDni(dni);
 
-            var validationResult = await _clientValidation.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
-            }
-
             var clientToUpdate = ClientMapper.ToEntityForUpdate(request, existingClient!);
 
             var updatedClient = await _clientService.Update(clientToUpdate, dni);
@@ -172,14 +149,6 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
             }
 
-            var validationResult = await _clientValidation.ValidateAsync(clientToPatch);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<ClientResponse>(false, "Ah ocurrido un error", null, errors, 400);
-            }
-
             var client = ClientMapper.ToEntityForPatch(clientToPatch, existingClient!);
 
             var updatedClient = await _clientService.UpdatePartial(client, dni);
@@ -189,38 +158,6 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente actualizado parcialmente con exito", response));
 
         }
-
-        //[HttpGet("movements")]
-        //public async Task<ActionResult<StandardResponse<List<ClientMovementResponse>>>> FindAllMovemets()
-        //{
-
-        //    var movements = await _clientService.FindAllMovementsClients();
-
-        //    var response = movements.Select(m => ClientMapper.ToMovementResponse(m)).ToList();
-
-        //    return Ok(new StandardResponse<List<ClientMovementResponse>>(
-        //        true,
-        //        "Movimientos de clientes obtenidos exitosamente",
-        //        response
-        //    ));
-
-        //}
-
-        //[HttpGet("{dni:long}/movements")]
-        //public async Task<ActionResult<StandardResponse<List<ClientMovementResponse>>>> FindAllMovemets(long dni)
-        //{
-
-        //    var movements = await _clientService.FindAllMovementsClientByDni(dni);
-
-        //    var response = movements.Select(m => ClientMapper.ToMovementResponse(m)).ToList();
-
-        //    return Ok(new StandardResponse<List<ClientMovementResponse>>(
-        //        true,
-        //        "Movimientos de clientes obtenidos exitosamente",
-        //        response
-        //    ));
-
-        //}
 
     }
 }
