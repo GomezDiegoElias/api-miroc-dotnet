@@ -39,17 +39,13 @@ namespace org.apimiroc.app.Controllers
                 return BadRequest(new StandardResponse<MovementResponse>(false, "Ah ocurrido un error", null, errors, 400));
             }
 
-            var conceptExists = await _serviceConcept.FindById(request.ConceptId)
-                ?? throw new ConceptNotFoundException(request.ConceptId);
-
             var movementCaptured = MovementMapper.ToEntity(request);
             var movementSaved = await _service.Save(movementCaptured);
-            //var response = MovementMapper.ToResponse(movementSaved);
 
             return Created(string.Empty, new StandardResponse<MovementResponse>(
                 true,
                 "Movimiento creado exitosamente",
-                null, // response
+                MovementMapper.ToResponse(movementSaved),
                 null,
                 201
             ));

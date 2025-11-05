@@ -11,10 +11,26 @@ namespace org.apimiroc.core.business.Services
     {
 
         private readonly IMovementRepository _repository;
+        private readonly IConceptRepository _conceptRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IProviderRepository _providerRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IConstructionRepository _constructionRepository;
 
-        public MovementService(IMovementRepository repository)
+        public MovementService(
+            IMovementRepository repository,
+            IConceptRepository conceptRepository,
+            IClientRepository clientRepository,
+            IProviderRepository providerRepository,
+            IEmployeeRepository employeeRepository,
+            IConstructionRepository constructionRepository)
         {
             _repository = repository;
+            _conceptRepository = conceptRepository;
+            _clientRepository = clientRepository;
+            _providerRepository = providerRepository;
+            _employeeRepository = employeeRepository;
+            _constructionRepository = constructionRepository;
         }
 
         public async Task DeleteByCode(int code)
@@ -48,7 +64,25 @@ namespace org.apimiroc.core.business.Services
 
         public async Task<Movement> Save(Movement movement)
         {
+
+            // Validaciones
+            var concept = await _conceptRepository.FindById(movement.ConceptId)
+                ?? throw new ConceptNotFoundException(movement.ConceptId);
+
+            if (movement.ClientId != null && await _clientRepository.FindById(movement.ClientId) == null)
+                throw new ClientNotFoundException($"Cliente con ID {movement.ClientId} no existe");
+
+            if (movement.EmployeeId != null && await _employeeRepository.FindById(movement.EmployeeId) == null)
+                throw new EmployeeNotFoundException($"Empleado con ID {movement.EmployeeId} no existe");
+
+            if (movement.ProviderId != null && await _providerRepository.FindById(movement.ProviderId) == null)
+                throw new ProviderNotFoundException($"Proveedor con ID {movement.ProviderId} no existe");
+
+            if (movement.ConstructionId != null && await _constructionRepository.FindById(movement.ConstructionId) == null)
+                throw new ConstructionNotFoundException($"Obra con ID {movement.ConstructionId} no existe");
+
             return await _repository.Save(movement);
+        
         }
 
         public async Task<Movement> Update(Movement movement, int code)
