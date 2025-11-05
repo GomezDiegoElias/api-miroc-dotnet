@@ -12,8 +12,8 @@ using org.apimiroc.core.data;
 namespace org.apimiroc.core.data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251104202027_relationForeignkeyClient-Construction")]
-    partial class relationForeignkeyClientConstruction
+    [Migration("20251105005054_RelationForeignKeyClientConstructionFixed")]
+    partial class RelationForeignKeyClientConstructionFixed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,7 +116,7 @@ namespace org.apimiroc.core.data.Migrations
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("cient_id");
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2")

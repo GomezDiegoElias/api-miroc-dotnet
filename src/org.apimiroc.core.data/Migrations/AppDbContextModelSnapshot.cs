@@ -113,7 +113,7 @@ namespace org.apimiroc.core.data.Migrations
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("cient_id");
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2")

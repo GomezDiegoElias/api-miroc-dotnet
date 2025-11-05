@@ -40,7 +40,7 @@ namespace org.apimiroc.core.entities.Entities
         [InverseProperty(nameof(Movement.Client))]
         public ICollection<Movement> Movements { get; set; } = new List<Movement>();
 
-        [InverseProperty(nameof(Client))]
+        [InverseProperty(nameof(Construction.Client))]
         public ICollection<Construction> Constructions { get; set; } = new List<Construction>();
         public Client() { }
 

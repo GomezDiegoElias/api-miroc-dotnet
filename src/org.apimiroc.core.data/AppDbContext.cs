@@ -93,13 +93,13 @@ namespace org.apimiroc.core.data
             modelBuilder.Entity<Provider>()
                 .HasIndex(q => q.Cuit)
                 .IsUnique();
-            
+
             modelBuilder.Entity<Provider>()
                 .HasQueryFilter(q => !q.IsDeleted); // Filtro global para soft delete
 
             // CONSTRUCTION
 
-        
+
 
             // client 1:n Construction
 
@@ -107,6 +107,7 @@ namespace org.apimiroc.core.data
                 .HasMany(c => c.Constructions)
                 .WithOne(cn => cn.Client)
                 .HasForeignKey(cn => cn.ClientId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             // CONCEPT
