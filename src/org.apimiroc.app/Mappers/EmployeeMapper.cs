@@ -7,6 +7,11 @@ namespace org.apimiroc.app.Mappers
     public static class EmployeeMapper
     {
 
+        public static Employee ToEntity(EmployeeRequest request)
+        {
+            return new Employee(Employee.GenerateId(), request.Dni, request.FirstName, request.LastName, request.WorkStation);
+        }
+
         public static EmployeeResponse ToResponse(Employee employee)
         {
             return new EmployeeResponse(employee.Dni, employee.FirstName, employee.LastName, employee.WorkStation);

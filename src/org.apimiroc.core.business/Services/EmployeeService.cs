@@ -47,19 +47,11 @@ namespace org.apimiroc.core.business.Services
                 ?? throw new EmployeeNotFoundException($"Empleado con ID {id} no existe");
         }
 
-        public async Task<Employee> Save(EmployeeRequest request)
+        public async Task<Employee> Save(Employee employee)
         {
-            if (await _employeeRepository.ExistDni(request.Dni)) throw new EmployeeNotFoundException($"El DNI ingresado {request.Dni} ya existe");
-            var newEmployee = new Employee
-            {
-                Id = Employee.GenerateId(),
-                Dni = request.Dni,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                WorkStation = request.WorkStation
-            };
-            var saveEmployee = await _employeeRepository.Save(newEmployee);
-            return saveEmployee;
+            if (await _employeeRepository.ExistDni(employee.Dni)) 
+                throw new EmployeeNotFoundException($"El DNI ingresado {employee.Dni} ya existe");
+            return await _employeeRepository.Save(employee);
         }
 
         public async Task<Employee> Update(Employee employee, long dniOld)
