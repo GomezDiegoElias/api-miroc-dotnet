@@ -15,7 +15,6 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<Client> DeletePermanent(long dni);
         public Task<Client> DeleteLogic(long dni);
         public Task<Client> UpdatePartial(Client client, long dniOld);
-        //public Task<List<Movement>> FindAllMovementsClients();
-        //public Task<List<Movement>> FindAllMovementsClientByDni(long dni);
+        //public Task<bool> ExistDni(long dni);
     }
 }

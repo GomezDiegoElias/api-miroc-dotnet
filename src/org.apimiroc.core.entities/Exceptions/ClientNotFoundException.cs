@@ -2,7 +2,9 @@
 {
     public class ClientNotFoundException : Exception
     {
-        public ClientNotFoundException(string dni)
+        public ClientNotFoundException(long dni)
             : base($"Error: Cliente buscado por {dni} no existe") { }
+        public ClientNotFoundException(string detail) 
+            : base($"Error: {detail}") { }
     }
 }
