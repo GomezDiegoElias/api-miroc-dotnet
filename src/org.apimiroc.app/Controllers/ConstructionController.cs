@@ -71,7 +71,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [HttpGet("api/v1/constructions/by-name/{name}")]
+        [HttpGet("api/v1/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindByName(string name)
         {
             var construction = await _constructionService.FindByName(name);
@@ -80,7 +80,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("api/v1/constructions/{id}")]
+        [HttpGet("api/v1/constructions/id/{id}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindConstructionById(string id)
         {
             var construction = await _constructionService.FindById(id);
