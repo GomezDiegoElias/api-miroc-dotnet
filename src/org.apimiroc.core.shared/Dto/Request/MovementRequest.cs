@@ -4,9 +4,9 @@
         decimal Amount,
         string PaymentMethod,
         int ConceptId,
-        string? ClientId,
-        string? ProviderId,
-        string? EmployeeId,
-        string? ConstructionId
+        long? ClientDni,
+        long? ProviderCuit,
+        long? EmployeeDni,
+        string? ConstructionName
     ) { }
 }

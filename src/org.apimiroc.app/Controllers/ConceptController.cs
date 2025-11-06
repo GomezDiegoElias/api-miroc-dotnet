@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.Filter;
@@ -15,12 +14,10 @@ namespace org.apimiroc.app.Controllers
     {
 
         private readonly IConceptService _service;
-        private readonly IValidator<ConceptRequest> _conceptValidation;
 
-        public ConceptController(IConceptService service, IValidator<ConceptRequest> conceptValidation)
+        public ConceptController(IConceptService service)
         {
             _service = service;
-            _conceptValidation = conceptValidation;
         }
 
         [HttpGet]
@@ -40,13 +37,6 @@ namespace org.apimiroc.app.Controllers
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> CreateConcept([FromBody] ConceptRequest request)
         {
-            var validationResult = await _conceptValidation.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validación fallida", HttpContext.Request.Path, validationErrors);
-                return BadRequest(new StandardResponse<ConceptResponse>(false, "Ah acurrido un error", null, errors, 400));
-            }
 
             var conceptCaptured = ConceptMapper.ToEntity(request);
             var savedConcept = await _service.Save(conceptCaptured);
@@ -113,19 +103,6 @@ namespace org.apimiroc.app.Controllers
                 200
             ));
         }
-
-        //[HttpDelete("permanent/{id:int}")]
-        //public async Task<ActionResult<StandardResponse<ConceptResponse>>> DeletedPermanent(int id)
-        //{
-        //    var deletedConcept = await _service.DeletePermanent(id);
-        //    return Ok(new StandardResponse<ConceptResponse>(
-        //        true,
-        //        "Concepto de movimiento eliminado permanentemente.",
-        //        ConceptMapper.ToResponse(deletedConcept),
-        //        null,
-        //        200
-        //    ));
-        //}
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> UpdateConcept(int id, [FromBody] ConceptRequest request)

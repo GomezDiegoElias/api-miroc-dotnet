@@ -2,6 +2,6 @@
 {
     public record AssociatedEntity(
         string Type,
-        string Id
+        object Key
     ) { }
 }

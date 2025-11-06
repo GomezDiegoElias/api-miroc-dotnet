@@ -36,7 +36,7 @@ namespace org.apimiroc.core.business.Services
         public async Task<Client?> FindByDni(long dni)
         {
             return await _clientRepository.FindByDni(dni)
-                ?? throw new ClientNotFoundException(dni.ToString());
+                ?? throw new ClientNotFoundException(dni);
         }
 
         public async Task<Client?> FindById(string id)

@@ -2,7 +2,7 @@
 {
     public class ConstructionNotFoundException : Exception
     {
-        public ConstructionNotFoundException(string name)
-            : base($"La obra {name} no existe") { }
+        public ConstructionNotFoundException(string details)
+            : base($"Error: {details}") { }
     }
 }

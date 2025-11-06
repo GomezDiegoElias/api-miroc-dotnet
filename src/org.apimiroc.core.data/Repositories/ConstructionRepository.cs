@@ -47,9 +47,40 @@ namespace org.apimiroc.core.data.Repositories
 
         }
 
-
-
         public async Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters)
+        {
+
+            // Parametros adicionales (filtros)
+            var extraParams = new Dictionary<string, object?>
+            {
+                { "@Q", filters.Q },
+                { "@FName", filters.FName },
+                { "@FAddress", filters.FAddress }
+            };
+
+            return await _paginationRepository.ExecutePaginationAsync(
+                storedProcedure: "getConstructionPaginationAdvancedWithUniqueKeysRelations",
+                map: reader => new Construction
+                {
+                    Id = reader["id"].ToString() ?? string.Empty,
+                    Name = reader["name"].ToString() ?? string.Empty,
+                    StartDate = Convert.ToDateTime(reader["startDate"]),
+                    EndDate = Convert.ToDateTime(reader["endDate"]),
+                    Address = reader["address"].ToString() ?? string.Empty,
+                    Description = reader["description"].ToString() ?? string.Empty,
+                    ClientId = reader["client_id"].ToString() ?? string.Empty,
+                    Client = new Client
+                    {
+                        Dni = Convert.ToInt64(reader["client_dni"]),
+                    },
+                },
+                filter: filters,
+                extraParams: extraParams
+            );
+
+        }
+
+        public async Task<PaginatedResponse<Construction>> FindAllV2(ConstructionFilter filters)
         {
 
             // Parametros adicionales (filtros)
@@ -70,6 +101,7 @@ namespace org.apimiroc.core.data.Repositories
                     EndDate = Convert.ToDateTime(reader["endDate"]),
                     Address = reader["address"].ToString() ?? string.Empty,
                     Description = reader["description"].ToString() ?? string.Empty,
+                    ClientId = reader["client_id"].ToString() ?? string.Empty,
                 },
                 filter: filters,
                 extraParams: extraParams
@@ -79,12 +111,16 @@ namespace org.apimiroc.core.data.Repositories
 
         public async Task<Construction?> FindById(string id)
         {
-            return await _context.Constructions.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Constructions
+                .Include(c => c.Client)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Construction?> FindByName(string name)
         {
-            return await _context.Constructions.FirstOrDefaultAsync(x => x.Name == name);
+            return await _context.Constructions
+                .Include(c => c.Client)
+                .FirstOrDefaultAsync(x => x.Name == name);
         }
 
         public async Task<Construction> Save(Construction construction)
@@ -97,7 +133,7 @@ namespace org.apimiroc.core.data.Repositories
         public async Task<Construction> Update(Construction construction, string nameOld)
         {
             var existingEntity = await FindByName(nameOld)
-                ?? throw new ConstructionNotFoundException(nameOld);
+                ?? throw new ConstructionNotFoundException($"Obra con nombre {nameOld} no existe");
 
             // Actualizar solo los campos necesarios
             existingEntity.Name = construction.Name;
@@ -105,6 +141,7 @@ namespace org.apimiroc.core.data.Repositories
             existingEntity.EndDate = construction.EndDate;
             existingEntity.Address = construction.Address;
             existingEntity.Description = construction.Description;
+            existingEntity.ClientId = construction.ClientId;
             existingEntity.UpdateAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -115,13 +152,14 @@ namespace org.apimiroc.core.data.Repositories
         {
 
             var existingEntity = await FindByName(nameOld)
-                ?? throw new ConstructionNotFoundException(nameOld.ToString());
+                ?? throw new ConstructionNotFoundException($"Obra con nombre {nameOld} no existe");
 
             existingEntity.Name = construction.Name;
             existingEntity.StartDate = construction.StartDate;
             existingEntity.EndDate = construction.EndDate;
             existingEntity.Address = construction.Address;
             existingEntity.Description = construction.Description;
+            existingEntity.ClientId = construction.ClientId;
             existingEntity.UpdateAt = DateTime.Now;
 
             await _context.SaveChangesAsync();

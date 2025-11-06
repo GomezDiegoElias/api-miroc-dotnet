@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
+using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.shared.Dto.Request;
 
 namespace org.apimiroc.app.Validations
 {
-    public class ConstructionValidation : AbstractValidator<ConstructionRequest>
+    public class ConstructionValidationV2 : AbstractValidator<ConstructionRequestV2>
     {
-        public ConstructionValidation()
+        public ConstructionValidationV2()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("El nombre es obligatorio");
@@ -18,9 +19,6 @@ namespace org.apimiroc.app.Validations
                 .MaximumLength(100).WithMessage("La dirección no puede exceder los 100 caracteres");
             RuleFor(x => x.Description)
                 .MaximumLength(300).WithMessage("La descripción no puede exceder los 300 caracteres");
-            RuleFor(x => x.ClientDni)
-                .GreaterThan(0).WithMessage("El DNI del cliente debe ser un número positivo")
-                .NotEmpty().WithMessage("El DNI del cliente es obligatorio");
         }
     }
 }
