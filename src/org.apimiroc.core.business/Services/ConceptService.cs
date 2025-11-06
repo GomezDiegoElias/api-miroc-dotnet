@@ -57,6 +57,8 @@ namespace org.apimiroc.core.business.Services
 
         public async Task<Concept> Save(Concept concept)
         {
+            if (await _repository.FindByName(concept.Name) != null)
+                throw new ConceptNotFoundException($"El concepto con nombre {concept.Name} ya existe");
             return await _repository.Save(concept);
         }
 
