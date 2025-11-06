@@ -12,10 +12,12 @@ namespace org.apimiroc.core.business.Services
     {
 
         private readonly IConstructionRepository _constructionRepository;
+        private readonly IClientRepository _clientRepository;
 
-        public ConstructionService(IConstructionRepository constructionRepository)
+        public ConstructionService(IConstructionRepository constructionRepository, IClientRepository clientRepository)
         {
             _constructionRepository = constructionRepository;
+            _clientRepository = clientRepository;
         }
 
         public async Task<Construction> DeleteLogic(string name)
@@ -28,6 +30,11 @@ namespace org.apimiroc.core.business.Services
             return await _constructionRepository.DeletePermanent(name);
         }
 
+        public async Task<PaginatedResponse<Construction>> FindAllV2(ConstructionFilter filters)
+        {
+            return await _constructionRepository.FindAllV2(filters);
+        }
+
         public async Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters)
         {
             return await _constructionRepository.FindAll(filters);
@@ -36,16 +43,37 @@ namespace org.apimiroc.core.business.Services
         public async Task<Construction?> FindById(string id)
         {
             return await _constructionRepository.FindById(id)
-                ?? throw new ConstructionNotFoundException(id);
+                ?? throw new ConstructionNotFoundException($"Obra con ID {id} no existe");
         }
 
         public async Task<Construction?> FindByName(string name)
         {
             return await _constructionRepository.FindByName(name)
-                ?? throw new ConstructionNotFoundException(name);
+                ?? throw new ConstructionNotFoundException($"Obra con nombre {name} no existe");
         }
 
         public async Task<Construction> Save(ConstructionRequest request)
+        {
+            
+            var client = await _clientRepository.FindByDni(request.ClientDni)
+                ?? throw new ClientNotFoundException(request.ClientDni);
+
+            var construction = new Construction
+            {
+                Id = Construction.GenerateId(),
+                Name = request.Name,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Address = request.Address,
+                Description = request.Description,
+                ClientId = client.Id
+            };
+
+            return await _constructionRepository.Save(construction);
+
+        }
+
+        public async Task<Construction> SaveV2(ConstructionRequestV2 request)
         {
             // Validar unicidad del nombre
             var exists = await _constructionRepository.FindByName(request.Name);
@@ -80,5 +108,6 @@ namespace org.apimiroc.core.business.Services
         {
             return await _constructionRepository.UpdatePartial(construction, name);
         }
+
     }
 }

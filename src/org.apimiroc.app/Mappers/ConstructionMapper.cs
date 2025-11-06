@@ -14,7 +14,8 @@ namespace org.apimiroc.app.Mappers
                 construction.StartDate,
                 construction.EndDate,
                 construction.Address,
-                construction.Description
+                construction.Description,
+                construction.Client.Dni
             );
         }
 
@@ -26,11 +27,61 @@ namespace org.apimiroc.app.Mappers
                 construction.EndDate,
                 construction.Address,
                 construction.Description,
+                construction.Client.Dni
+            );
+        }
+
+        public static ConstructionResponseV2 ToResponseV2(Construction construction)
+        {
+            return new ConstructionResponseV2(
+                construction.Name,
+                construction.StartDate,
+                construction.EndDate,
+                construction.Address,
+                construction.Description,
                 construction.ClientId
             );
         }
 
-        public static Construction ToEntityForUpdate(ConstructionRequest request, Construction construction)
+        public static ConstructionRequestV2 ToRequestV2(Construction construction)
+        {
+            return new ConstructionRequestV2(
+                construction.Name,
+                construction.StartDate,
+                construction.EndDate,
+                construction.Address,
+                construction.Description,
+                construction.ClientId
+            );
+        }
+
+        public static Construction ToEntityForUpdate(ConstructionRequest request, Construction construction, string clientId)
+        {
+            return new Construction(
+                construction.Id,
+                request.Name,
+                request.StartDate,
+                request.EndDate,
+                request.Address,
+                request.Description,
+                clientId
+            );
+        }
+
+        public static Construction ToEntityForPatch(ConstructionRequest request, Construction construction, string clientId)
+        {
+            return new Construction(
+                construction.Id,
+                request.Name,
+                request.StartDate,
+                request.EndDate,
+                request.Address,
+                request.Description,
+                clientId
+            );
+        }
+
+        public static Construction ToEntityForUpdateV2(ConstructionRequestV2 request, Construction construction)
         {
             return new Construction(
                 construction.Id,
@@ -43,7 +94,7 @@ namespace org.apimiroc.app.Mappers
             );
         }
 
-        public static Construction ToEntityForPatch(ConstructionRequest request, Construction construction)
+        public static Construction ToEntityForPatchV2(ConstructionRequestV2 request, Construction construction)
         {
             return new Construction(
                 construction.Id,

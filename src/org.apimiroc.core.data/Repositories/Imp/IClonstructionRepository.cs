@@ -6,6 +6,7 @@ namespace org.apimiroc.core.data.Repositories.Imp
 {
     public interface IConstructionRepository
     {
+        public Task<PaginatedResponse<Construction>> FindAllV2(ConstructionFilter filters);
         public Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters);
         public Task<Construction?> FindByName(string name);
         public Task<Construction?> FindById(string id);

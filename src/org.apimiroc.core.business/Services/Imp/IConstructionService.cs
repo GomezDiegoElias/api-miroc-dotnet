@@ -7,13 +7,16 @@ namespace org.apimiroc.core.business.Services.Imp
 {
     public interface IConstructionService
     {
+        public Task<PaginatedResponse<Construction>> FindAllV2(ConstructionFilter filters);
         public Task<PaginatedResponse<Construction>> FindAll(ConstructionFilter filters);
         public Task<Construction?> FindByName(string name);
         public Task<Construction?> FindById(string id);
+        public Task<Construction> SaveV2(ConstructionRequestV2 request);
         public Task<Construction> Save(ConstructionRequest request);
         public Task<Construction> Update(Construction construction, string name);
+        public Task<Construction> UpdatePartial(Construction construction, string name);
         public Task<Construction> DeletePermanent(string name);
         public Task<Construction> DeleteLogic(string name);
-        public Task<Construction> UpdatePartial(Construction construction, string name);
+        
     }
 }

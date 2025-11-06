@@ -1,12 +1,12 @@
-﻿namespace org.apimiroc.core.shared.Dto.Request
+﻿namespace org.apimiroc.core.shared.Dto.Response
 {
-    public record ConstructionRequest(
+    public record ConstructionResponseV2(
         string Name,
         DateTime StartDate,
         DateTime EndDate,
         string Address,
         string Description,
-        long ClientDni
+        string ClientId
     )
     { }
 }

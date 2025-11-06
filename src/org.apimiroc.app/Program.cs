@@ -64,6 +64,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<ConceptValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<MovementValidation>();
 
 // Validacion con relaciones de ID de la version 2
+builder.Services.AddValidatorsFromAssemblyContaining<ConstructionValidationV2>();
 builder.Services.AddValidatorsFromAssemblyContaining<MovementValidationV2>();
 
 builder.Services.AddApplicationServices(builder.Configuration);
