@@ -10,6 +10,7 @@ namespace org.apimiroc.app.Mappers
     {
 
         // mappers para la version 1 con relaciones por claves unicas
+
         public static MovementResponse ToResponse(Movement movement)
         {
             AssociatedEntity? associated = null;

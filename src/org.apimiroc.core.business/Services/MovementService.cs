@@ -146,6 +146,56 @@ namespace org.apimiroc.core.business.Services
 
         }
 
+        public async Task<Movement> Update(MovementRequest request, int code)
+        {
+
+            Client? client = null;
+            Provider? provider = null;
+            Employee? employee = null;
+            Construction? construction = null;
+
+            var existingMovement = await _repository.FindByCode(code)
+                ?? throw new MovementNotFoundException(code);
+
+            if (request.ClientDni != null)
+            {
+                client = await _clientRepository.FindByDni(request.ClientDni.Value)
+                    ?? throw new ClientNotFoundException($"Cliente con DNI {request.ClientDni} no existe");
+            }
+
+            if (request.ProviderCuit != null)
+            {
+                provider = await _providerRepository.FindByCuit(request.ProviderCuit.Value)
+                    ?? throw new ProviderNotFoundException($"Proveedor con CUIT {request.ProviderCuit} no existe");
+            }
+
+            if (request.EmployeeDni != null)
+            {
+                employee = await _employeeRepository.FindByDni(request.EmployeeDni.Value)
+                    ?? throw new EmployeeNotFoundException($"Empleado con DNI {request.EmployeeDni} no existe");
+            }
+
+            if (!string.IsNullOrEmpty(request.ConstructionName))
+            {
+                construction = await _constructionRepository.FindByName(request.ConstructionName)
+                    ?? throw new ConstructionNotFoundException($"Obra con nombre {request.ConstructionName} no existe");
+            }
+
+            existingMovement.Amount = request.Amount;
+            existingMovement.PaymentMethod = Enum.Parse<PaymentMethod>(request.PaymentMethod);
+            existingMovement.ConceptId = request.ConceptId;
+            existingMovement.ClientId = client?.Id;
+            existingMovement.ProviderId = provider?.Id;
+            existingMovement.EmployeeId = employee?.Id;
+            existingMovement.ConstructionId = construction?.Id;
+
+            // actualizar la fecha de modificacion
+            // existingMovement.UpdatedAt = DateTime.Now;
+
+            return await _repository.Update(existingMovement);
+
+        }
+
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░ Version 2 - relaciones con id ░░░░░░░░░░░░░░░░░░░░░░░░░░
         public async Task<Movement> SaveV2(Movement movement)
         {
@@ -174,7 +224,7 @@ namespace org.apimiroc.core.business.Services
         
         }
 
-        public async Task<Movement> Update(Movement movement, int code)
+        public async Task<Movement> UpdateV2(Movement movement, int code)
         {
             var existingMovement = await _repository.FindByCode(code)
                 ?? throw new MovementNotFoundException(code);
@@ -192,7 +242,7 @@ namespace org.apimiroc.core.business.Services
         }
 
 
-        public Task<Movement> UpdatePartial(Movement movement, int code)
+        public Task<Movement> UpdatePartialV2(Movement movement, int code)
         {
             throw new NotImplementedException();
         }
