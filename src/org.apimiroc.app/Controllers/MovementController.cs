@@ -93,6 +93,26 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [HttpPut("api/v1/movements/{code:int}")]
+        public async Task<ActionResult<StandardResponse<MovementResponse>>> UpdateByCode(
+            int code,
+            [FromBody] MovementRequest request
+        )
+        {
+
+            var movementToUpdated = await _service.Update(request, code);
+            var response = MovementMapper.ToResponse(movementToUpdated);
+
+            return Ok(new StandardResponse<MovementResponse>(
+                true,
+                "Movimiento actualizado exitosamente",
+                response,
+                null,
+                200
+            ));
+
+        }
+
         [HttpDelete("api/v1/movements/{id}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteById(string id)
         {
@@ -202,7 +222,7 @@ namespace org.apimiroc.app.Controllers
         {
 
             var movementCaptured = MovementMapper.ToEntityV2(request);
-            var movementUpdated = await _service.Update(movementCaptured, code);
+            var movementUpdated = await _service.UpdateV2(movementCaptured, code);
             var response = MovementMapper.ToResponseV2(movementUpdated);
 
             return Ok(new StandardResponse<MovementResponseV2>(
