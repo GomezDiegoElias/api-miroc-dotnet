@@ -54,7 +54,12 @@ namespace org.apimiroc.core.business.Services
 
         public async Task<Construction> Save(ConstructionRequest request)
         {
-            
+
+            // Validar unicidad del nombre
+            var exists = await _constructionRepository.FindByName(request.Name);
+            if (exists != null)
+                throw new ConstructionNotFoundException($"El nombre {request.Name} ya existe.");
+
             var client = await _clientRepository.FindByDni(request.ClientDni)
                 ?? throw new ClientNotFoundException(request.ClientDni);
 
@@ -78,7 +83,10 @@ namespace org.apimiroc.core.business.Services
             // Validar unicidad del nombre
             var exists = await _constructionRepository.FindByName(request.Name);
             if (exists != null)
-                throw new Exception("El nombre de la construcción ya existe.");
+                throw new ConstructionNotFoundException($"El nombre {request.Name} ya existe.");
+
+            var client = await _clientRepository.FindById(request.ClientId)
+                ?? throw new ClientNotFoundException($"Cliente con ID {request.ClientId} no existe");
 
             // Validaciones
 
@@ -90,7 +98,7 @@ namespace org.apimiroc.core.business.Services
                 EndDate = request.EndDate,
                 Address = request.Address,
                 Description = request.Description,
-                ClientId = request.ClientId
+                ClientId = client.Id
             };
 
             var saveConstruction = await _constructionRepository.Save(newConstruction);

@@ -10,6 +10,41 @@ namespace org.apimiroc.app.Mappers
     {
 
         // mappers para la version 1 con relaciones por claves unicas
+        // Mapper para convertir Movement a MovementRequest (V1)
+        public static MovementRequest ToRequest(Movement movement)
+        {
+            long? clientDni = null;
+            long? providerCuit = null;
+            long? employeeDni = null;
+            string? constructionName = null;
+
+            if (!string.IsNullOrEmpty(movement.ClientId) && movement.Client != null)
+            {
+                clientDni = movement.Client.Dni;
+            }
+            else if (!string.IsNullOrEmpty(movement.ProviderId) && movement.Provider != null)
+            {
+                providerCuit = movement.Provider.Cuit;
+            }
+            else if (!string.IsNullOrEmpty(movement.EmployeeId) && movement.Employee != null)
+            {
+                employeeDni = movement.Employee.Dni;
+            }
+            else if (!string.IsNullOrEmpty(movement.ConstructionId) && movement.Construction != null)
+            {
+                constructionName = movement.Construction.Name;
+            }
+
+            return new MovementRequest(
+                movement.Amount,
+                movement.PaymentMethod.ToString(),
+                movement.ConceptId,
+                clientDni,
+                providerCuit,
+                employeeDni,
+                constructionName
+            );
+        }
 
         public static MovementResponse ToResponse(Movement movement)
         {
@@ -101,6 +136,37 @@ namespace org.apimiroc.app.Mappers
                 ConceptDescription: movement.Concept.Description,
                 AssociatedEntity: associated
             );
+        }
+
+        public static MovementRequestV2 ToRequestV2(Movement movement)
+        {
+            return new MovementRequestV2(
+                movement.Amount,
+                movement.PaymentMethod.ToString(),
+                movement.ConceptId,
+                movement.ClientId,
+                movement.ProviderId,
+                movement.EmployeeId,
+                movement.ConstructionId
+            );
+        }
+
+        public static Movement ToEntityForPatchV2(MovementRequestV2 request, Movement existingMovement)
+        {
+            return new Movement
+            {
+                Id = existingMovement.Id,
+                CodMovement = existingMovement.CodMovement,
+                Amount = request.Amount,
+                Date = DateTime.Now,
+                PaymentMethod = Enum.Parse<PaymentMethod>(request.PaymentMethod),
+                ConceptId = request.ConceptId,
+                ClientId = request.ClientId,
+                ProviderId = request.ProviderId,
+                EmployeeId = request.EmployeeId,
+                ConstructionId = request.ConstructionId,
+                IsDeleted = existingMovement.IsDeleted
+            };
         }
 
     }

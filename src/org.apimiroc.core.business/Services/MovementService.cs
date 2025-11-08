@@ -196,6 +196,90 @@ namespace org.apimiroc.core.business.Services
 
         }
 
+        public async Task<Movement> UpdatePartial(MovementRequest request, int code)
+        {
+            var existingMovement = await _repository.FindByCode(code)
+                ?? throw new MovementNotFoundException(code);
+
+            // Validar que el concepto existe
+            if (await _conceptRepository.FindById(request.ConceptId) == null)
+            {
+                _logger.LogWarning("Concepto con ID {ConceptId} no encontrado", request.ConceptId);
+                throw new ConceptNotFoundException($"Concepto con ID {request.ConceptId} no existe");
+            }
+
+            // Buscar y validar las entidades relacionadas usando claves únicas
+            Client? client = null;
+            Provider? provider = null;
+            Employee? employee = null;
+            Construction? construction = null;
+
+            if (request.ClientDni != null)
+            {
+                _logger.LogInformation("Buscando cliente con DNI {ClientDni}", request.ClientDni);
+                client = await _clientRepository.FindByDni(request.ClientDni.Value);
+                if (client == null)
+                {
+                    _logger.LogWarning("Cliente con DNI {ClientDni} no encontrado", request.ClientDni);
+                    throw new ClientNotFoundException($"Cliente con DNI {request.ClientDni} no existe");
+                }
+            }
+
+            if (request.ProviderCuit != null)
+            {
+                _logger.LogInformation("Buscando proveedor con CUIT {ProviderCuit}", request.ProviderCuit);
+                provider = await _providerRepository.FindByCuit(request.ProviderCuit.Value);
+                if (provider == null)
+                {
+                    _logger.LogWarning("Proveedor con CUIT {ProviderCuit} no encontrado", request.ProviderCuit);
+                    throw new ProviderNotFoundException($"Proveedor con CUIT {request.ProviderCuit} no existe");
+                }
+            }
+
+            if (request.EmployeeDni != null)
+            {
+                _logger.LogInformation("Buscando empleado con DNI {EmployeeDni}", request.EmployeeDni);
+                employee = await _employeeRepository.FindByDni(request.EmployeeDni.Value);
+                if (employee == null)
+                {
+                    _logger.LogWarning("Empleado con DNI {EmployeeDni} no encontrado", request.EmployeeDni);
+                    throw new EmployeeNotFoundException($"Empleado con DNI {request.EmployeeDni} no existe");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(request.ConstructionName))
+            {
+                _logger.LogInformation("Buscando obra con nombre {ConstructionName}", request.ConstructionName);
+                construction = await _constructionRepository.FindByName(request.ConstructionName);
+                if (construction == null)
+                {
+                    _logger.LogWarning("Obra con nombre {ConstructionName} no encontrada", request.ConstructionName);
+                    throw new ConstructionNotFoundException($"Obra con nombre {request.ConstructionName} no existe");
+                }
+            }
+
+            // Obtener los IDs resueltos
+            string? clientId = client?.Id;
+            string? providerId = provider?.Id;
+            string? employeeId = employee?.Id;
+            string? constructionId = construction?.Id;
+
+            // Limpiar relaciones anteriores SOLO si se detecta una nueva relación
+            CleanPreviousRelationsV1(existingMovement, ref clientId, ref providerId, ref employeeId, ref constructionId);
+
+            // Actualizar los campos con los IDs ya limpiados
+            existingMovement.Amount = request.Amount;
+            existingMovement.PaymentMethod = Enum.Parse<PaymentMethod>(request.PaymentMethod);
+            existingMovement.ConceptId = request.ConceptId;
+            existingMovement.ClientId = clientId;
+            existingMovement.ProviderId = providerId;
+            existingMovement.EmployeeId = employeeId;
+            existingMovement.ConstructionId = constructionId;
+            existingMovement.Date = DateTime.Now;
+
+            return await _repository.UpdatePartial(existingMovement);
+        }
+
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░ Version 2 - relaciones con id ░░░░░░░░░░░░░░░░░░░░░░░░░░
         public async Task<Movement> SaveV2(Movement movement)
         {
@@ -236,15 +320,40 @@ namespace org.apimiroc.core.business.Services
             existingMovement.ProviderId = movement.ProviderId;
             existingMovement.EmployeeId = movement.EmployeeId;
             existingMovement.ConstructionId = movement.ConstructionId;
-            existingMovement.Date = DateTime.Now;
+            //existingMovement.Date = DateTime.Now;
 
             return await _repository.Update(existingMovement);
         }
 
-
-        public Task<Movement> UpdatePartialV2(Movement movement, int code)
+        public async Task<Movement> UpdatePartialV2(Movement movement, int code)
         {
-            throw new NotImplementedException();
+            var existingMovement = await _repository.FindByCode(code)
+                ?? throw new MovementNotFoundException(code);
+
+            // Validar que el concepto existe
+            if (await _conceptRepository.FindById(movement.ConceptId) == null)
+            {
+                _logger.LogWarning("Concepto con ID {ConceptId} no encontrado", movement.ConceptId);
+                throw new ConceptNotFoundException($"Concepto con ID {movement.ConceptId} no existe");
+            }
+
+            // Validar las relaciones opcionales
+            await ValidateMovement(movement);
+
+            // Limpiar relaciones anteriores SOLO si se detecta que se está estableciendo una nueva relación
+            CleanPreviousRelations(existingMovement, movement);
+
+            // Actualizar los campos
+            existingMovement.Amount = movement.Amount;
+            existingMovement.PaymentMethod = movement.PaymentMethod;
+            existingMovement.ConceptId = movement.ConceptId;
+            existingMovement.ClientId = movement.ClientId;
+            existingMovement.ProviderId = movement.ProviderId;
+            existingMovement.EmployeeId = movement.EmployeeId;
+            existingMovement.ConstructionId = movement.ConstructionId;
+            existingMovement.Date = DateTime.Now;
+
+            return await _repository.UpdatePartial(existingMovement);
         }
 
 
@@ -296,6 +405,111 @@ namespace org.apimiroc.core.business.Services
                     throw new ConstructionNotFoundException($"Obra con ID {movement.ConstructionId} no existe");
                 }
             }
+        }
+
+        private void CleanPreviousRelations(Movement existingMovement, Movement newMovement)
+        {
+            // Detecta si se está intentando establecer una nueva relación
+            bool hasNewClientRelation = !string.IsNullOrEmpty(newMovement.ClientId) && newMovement.ClientId != existingMovement.ClientId;
+            bool hasNewProviderRelation = !string.IsNullOrEmpty(newMovement.ProviderId) && newMovement.ProviderId != existingMovement.ProviderId;
+            bool hasNewEmployeeRelation = !string.IsNullOrEmpty(newMovement.EmployeeId) && newMovement.EmployeeId != existingMovement.EmployeeId;
+            bool hasNewConstructionRelation = !string.IsNullOrEmpty(newMovement.ConstructionId) && newMovement.ConstructionId != existingMovement.ConstructionId;
+
+            // Si se está estableciendo una nueva relación con Cliente
+            if (hasNewClientRelation)
+            {
+                _logger.LogInformation("Nueva relación con Cliente detectada. Limpiando relaciones previas con otras entidades.");
+                newMovement.ProviderId = null;
+                newMovement.EmployeeId = null;
+                newMovement.ConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Proveedor
+            if (hasNewProviderRelation)
+            {
+                _logger.LogInformation("Nueva relación con Proveedor detectada. Limpiando relaciones previas con otras entidades.");
+                newMovement.ClientId = null;
+                newMovement.EmployeeId = null;
+                newMovement.ConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Empleado
+            if (hasNewEmployeeRelation)
+            {
+                _logger.LogInformation("Nueva relación con Empleado detectada. Limpiando relaciones previas con otras entidades.");
+                newMovement.ClientId = null;
+                newMovement.ProviderId = null;
+                newMovement.ConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Obra
+            if (hasNewConstructionRelation)
+            {
+                _logger.LogInformation("Nueva relación con Obra detectada. Limpiando relaciones previas con otras entidades.");
+                newMovement.ClientId = null;
+                newMovement.ProviderId = null;
+                newMovement.EmployeeId = null;
+                return;
+            }
+
+            // Si no hay cambios en las relaciones, no hacer nada (mantener relaciones existentes)
+            _logger.LogInformation("No se detectaron cambios en las relaciones. Manteniendo relaciones existentes.");
+        }
+
+        // ░░░░░░░░░░░░░░░░░░░░░░░░░░ Limpieza de relaciones para Version 1 (claves únicas) ░░░░░░░░░░░░░░░░░░░░░░░░░░
+        private void CleanPreviousRelationsV1(Movement existingMovement, ref string? newClientId, ref string? newProviderId, ref string? newEmployeeId, ref string? newConstructionId)
+        {
+            // Detectar si se está intentando establecer una nueva relación
+            bool hasNewClientRelation = !string.IsNullOrEmpty(newClientId) && newClientId != existingMovement.ClientId;
+            bool hasNewProviderRelation = !string.IsNullOrEmpty(newProviderId) && newProviderId != existingMovement.ProviderId;
+            bool hasNewEmployeeRelation = !string.IsNullOrEmpty(newEmployeeId) && newEmployeeId != existingMovement.EmployeeId;
+            bool hasNewConstructionRelation = !string.IsNullOrEmpty(newConstructionId) && newConstructionId != existingMovement.ConstructionId;
+
+            // Si se está estableciendo una nueva relación con Cliente
+            if (hasNewClientRelation)
+            {
+                _logger.LogInformation("Nueva relación con Cliente detectada (V1). Limpiando relaciones previas con otras entidades.");
+                newProviderId = null;
+                newEmployeeId = null;
+                newConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Proveedor
+            if (hasNewProviderRelation)
+            {
+                _logger.LogInformation("Nueva relación con Proveedor detectada (V1). Limpiando relaciones previas con otras entidades.");
+                newClientId = null;
+                newEmployeeId = null;
+                newConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Empleado
+            if (hasNewEmployeeRelation)
+            {
+                _logger.LogInformation("Nueva relación con Empleado detectada (V1). Limpiando relaciones previas con otras entidades.");
+                newClientId = null;
+                newProviderId = null;
+                newConstructionId = null;
+                return;
+            }
+
+            // Si se está estableciendo una nueva relación con Obra
+            if (hasNewConstructionRelation)
+            {
+                _logger.LogInformation("Nueva relación con Obra detectada (V1). Limpiando relaciones previas con otras entidades.");
+                newClientId = null;
+                newProviderId = null;
+                newEmployeeId = null;
+                return;
+            }
+
+            // Si no hay cambios en las relaciones, no hacer nada (mantener relaciones existentes)
+            _logger.LogInformation("No se detectaron cambios en las relaciones (V1). Manteniendo relaciones existentes.");
         }
 
     }
