@@ -16,6 +16,7 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<Movement> UpdateV2(Movement movement, int code);
         public Task<Movement> UpdatePartialV2(Movement movement, int code);
         public Task<Movement> Update(MovementRequest request, int code);
+        public Task<Movement> UpdatePartial(MovementRequest request, int code);
         public Task DeleteById(string id);
         public Task DeleteByCode(int code);
     }

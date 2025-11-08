@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.Filter;
@@ -113,6 +115,39 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [HttpPatch("api/v1/movements/{code:int}")]
+        public async Task<ActionResult<StandardResponse<MovementResponse>>> UpdatePartialByCode(
+            int code,
+            [FromBody] JsonPatchDocument<MovementRequest> patchDoc
+        )
+        {
+            if (patchDoc == null)
+            {
+                var errors = new ErrorDetails(400, "Documento de parcheo nulo", HttpContext.Request.Path, "El documento de parcheo no puede ser nulo");
+                return BadRequest(new StandardResponse<MovementResponse>(false, "Ah ocurrido un error", null, errors));
+            }
+
+            var existingMovement = await _service.FindByCode(code);
+
+            var movementToPatch = MovementMapper.ToRequest(existingMovement);
+
+            var modelState = new ModelStateDictionary();
+            patchDoc.ApplyTo(movementToPatch, modelState);
+            if (!modelState.IsValid)
+            {
+                var errors = string.Join("; ", modelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                var errorDetails = new ErrorDetails(400, "Error de validacion", HttpContext.Request.Path, errors);
+                return BadRequest(new StandardResponse<MovementResponse>(false, "Ah ocurrido un error", null, errorDetails));
+            }
+
+            var updatedMovement = await _service.UpdatePartial(movementToPatch, code);
+
+            var response = MovementMapper.ToResponse(updatedMovement);
+
+            return Ok(new StandardResponse<MovementResponse>(true, "Movimiento actualizado parcialmente con éxito", response));
+
+        }
+
         [HttpDelete("api/v1/movements/{id}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteById(string id)
         {
@@ -161,7 +196,7 @@ namespace org.apimiroc.app.Controllers
 
         [HttpGet("api/v2/movements")]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<MovementResponseV2>>>> FindAllV2(
-            [FromQuery] MovementFilter filters    
+            [FromQuery] MovementFilter filters
         )
         {
 
@@ -216,7 +251,7 @@ namespace org.apimiroc.app.Controllers
         // UPDATE
         [HttpPut("api/v2/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> UpdateByCodeV2(
-            int code, 
+            int code,
             [FromBody] MovementRequestV2 request
         )
         {
@@ -234,6 +269,43 @@ namespace org.apimiroc.app.Controllers
             ));
 
         }
+
+        [HttpPatch("api/v2/movements/{code:int}")]
+        public async Task<ActionResult<StandardResponse<MovementResponseV2>>> UpdatePartialByCodeV2(
+            int code,
+            [FromBody] JsonPatchDocument<MovementRequestV2> patchDoc
+        )
+        {
+            
+            if (patchDoc == null)
+            {
+                var errors = new ErrorDetails(400, "Documento de parcheo nulo", HttpContext.Request.Path, "El documento de parcheo no puede ser nulo");
+                return BadRequest(new StandardResponse<MovementResponseV2>(false, "Ah ocurrido un error", null, errors));
+            }
+
+            var existingMovement = await _service.FindByCode(code);
+
+            var movementToPatch = MovementMapper.ToRequestV2(existingMovement);
+
+            var modelState = new ModelStateDictionary();
+            patchDoc.ApplyTo(movementToPatch, modelState);
+            if (!modelState.IsValid)
+            {
+                var errors = string.Join("; ", modelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                var errorDetails = new ErrorDetails(400, "Error de validacion", HttpContext.Request.Path, errors);
+                return BadRequest(new StandardResponse<MovementResponseV2>(false, "Ah ocurrido un error", null, errorDetails));
+            }
+
+            var movementToUpdate = MovementMapper.ToEntityForPatchV2(movementToPatch, existingMovement);
+
+            var updatedMovement = await _service.UpdatePartialV2(movementToUpdate, code);
+
+            var response = MovementMapper.ToResponseV2(updatedMovement);
+
+            return Ok(new StandardResponse<MovementResponseV2>(true, "Movimiento actualizado parcialmente con éxito", response));
+
+        }
+
 
         [HttpDelete("api/v2/movements/{id}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteByIdV2(string id)
