@@ -7,6 +7,7 @@ using org.apimiroc.core.entities.Exceptions;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.core.business.Services
 {
@@ -39,6 +40,11 @@ namespace org.apimiroc.core.business.Services
             _employeeRepository = employeeRepository;
             _constructionRepository = constructionRepository;
             _logger = logger;
+        }
+
+        public async Task<TotalSummaryOfMovements> getTotalSumarry()
+        {
+            return await _repository.getTotalSumarry();
         }
 
         public async Task DeleteByCode(int code)

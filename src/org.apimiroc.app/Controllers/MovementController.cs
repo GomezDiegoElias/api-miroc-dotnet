@@ -22,6 +22,19 @@ namespace org.apimiroc.app.Controllers
             _service = service;
         }
 
+        [HttpGet("api/v1/movements/summary")]
+        public async Task<ActionResult<StandardResponse<TotalSummaryOfMovements>>> GetTotalSummary()
+        {
+            var summary =  await _service.getTotalSumarry();
+            return Ok(new StandardResponse<TotalSummaryOfMovements>(
+                true,
+                "Resumen total de movimientos obtenido exitosamente",
+                summary,
+                null,
+                200
+            ));
+        }
+
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 1 - RELACIONES CON CLAVES UNICAS ░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
         [HttpGet("api/v1/movements")]

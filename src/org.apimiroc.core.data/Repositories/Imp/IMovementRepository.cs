@@ -1,6 +1,7 @@
 ﻿using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.core.data.Repositories.Imp
 {
@@ -14,5 +15,6 @@ namespace org.apimiroc.core.data.Repositories.Imp
         public Task<Movement> Update(Movement movement);
         public Task<Movement> UpdatePartial(Movement movement);
         public Task DeleteLogic(Movement movement);
+        public Task<TotalSummaryOfMovements> getTotalSumarry();
     }
 }
