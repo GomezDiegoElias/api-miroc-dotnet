@@ -4,6 +4,7 @@ using org.apimiroc.core.entities.Entities;
 using org.apimiroc.core.entities.Enums;
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.core.data.Repositories
 {
@@ -185,6 +186,15 @@ namespace org.apimiroc.core.data.Repositories
                 .Include(m => m.Employee)
                 .Include(m => m.Construction)
                 .FirstAsync(m => m.Id == movement.Id);
+        }
+
+        public async Task<TotalSummaryOfMovements> getTotalSumarry()
+        {
+            var result = await _context.Database
+                .SqlQueryRaw<TotalSummaryOfMovements>(
+                    "EXEC getTotalSummaryOfMovements"
+                ).ToListAsync();
+            return result.FirstOrDefault() ?? new TotalSummaryOfMovements(0, 0, 0);
         }
     }
 }

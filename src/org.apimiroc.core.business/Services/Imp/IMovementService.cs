@@ -2,6 +2,7 @@
 using org.apimiroc.core.shared.Dto.Filter;
 using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
+using org.apimiroc.core.shared.Dto.Response.Movements;
 
 namespace org.apimiroc.core.business.Services.Imp
 {
@@ -19,5 +20,6 @@ namespace org.apimiroc.core.business.Services.Imp
         public Task<Movement> UpdatePartial(MovementRequest request, int code);
         public Task DeleteById(string id);
         public Task DeleteByCode(int code);
+        public Task<TotalSummaryOfMovements> getTotalSumarry();
     }
 }
