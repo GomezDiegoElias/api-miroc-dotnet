@@ -148,6 +148,27 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [AllowAnonymous]
+        [HttpDelete("api/v1/constructions/permanent/{name}")]
+        public async Task<ActionResult<StandardResponse<ConstructionResponse>>> DeleteConstruction(string name)
+        {
+            var existingConstruction = await _constructionService.FindByName(name);
+            var deletedConstruction = await _constructionService.DeletePermanent(existingConstruction!.Name);
+            var response = ConstructionMapper.ToResponse(deletedConstruction);
+            return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción eliminada exitosamente", response));
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("api/v1/constructions/{name}")]
+        public async Task<ActionResult<StandardResponse<ConstructionRequest>>> DeleteConstructionLogic(string name)
+        {
+            var existingConstruction = await _constructionService.FindByName(name);
+            var deletedConstruction = await _constructionService.DeleteLogic(existingConstruction!.Name);
+            var response = ConstructionMapper.ToResponse(deletedConstruction);
+            return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción eliminada exitosamente", response));
+
+        }
+
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 2 - RELACIONES CON ID ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
         [AllowAnonymous]
@@ -214,27 +235,6 @@ namespace org.apimiroc.app.Controllers
         }
 
         [AllowAnonymous]
-        [HttpDelete("api/v2/constructions/permanent/{name}")]
-        public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> DeleteConstruction(string name)
-        {
-            var existingConstruction = await _constructionService.FindByName(name);
-            var deletedConstruction = await _constructionService.DeletePermanent(existingConstruction!.Name);
-            var response = ConstructionMapper.ToResponseV2(deletedConstruction);
-            return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción eliminada exitosamente", response));
-        }
-
-        [AllowAnonymous]
-        [HttpDelete("api/v2/constructions/{name}")]
-        public async Task<ActionResult<StandardResponse<ConstructionRequestV2>>> DeleteConstructionLogic(string name)
-        {
-            var existingConstruction = await _constructionService.FindByName(name);
-            var deletedConstruction = await _constructionService.DeleteLogic(existingConstruction!.Name);
-            var response = ConstructionMapper.ToResponseV2(deletedConstruction);
-            return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción eliminada exitosamente", response));
-
-        }
-
-        [AllowAnonymous]
         [HttpPut("api/v2/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> UpdateConstructionV2(
             [FromBody] ConstructionRequestV2 request,
@@ -287,6 +287,27 @@ namespace org.apimiroc.app.Controllers
             var response = ConstructionMapper.ToResponseV2(updatedConstruction);
 
             return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción actualizada parcialmente con éxito", response));
+
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("api/v2/constructions/permanent/{name}")]
+        public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> DeleteConstructionV2(string name)
+        {
+            var existingConstruction = await _constructionService.FindByName(name);
+            var deletedConstruction = await _constructionService.DeletePermanent(existingConstruction!.Name);
+            var response = ConstructionMapper.ToResponseV2(deletedConstruction);
+            return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción eliminada exitosamente", response));
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("api/v2/constructions/{name}")]
+        public async Task<ActionResult<StandardResponse<ConstructionRequestV2>>> DeleteConstructionLogicV2(string name)
+        {
+            var existingConstruction = await _constructionService.FindByName(name);
+            var deletedConstruction = await _constructionService.DeleteLogic(existingConstruction!.Name);
+            var response = ConstructionMapper.ToResponseV2(deletedConstruction);
+            return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción eliminada exitosamente", response));
 
         }
 
