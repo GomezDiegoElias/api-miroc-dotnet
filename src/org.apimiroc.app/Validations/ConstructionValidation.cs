@@ -11,9 +11,9 @@ namespace org.apimiroc.app.Validations
                 .NotEmpty().WithMessage("El nombre es obligatorio");
             RuleFor(x => x.StartDate)
                 .NotEmpty().WithMessage("La fecha de inicio es obligatoria");
-            RuleFor(x => x.EndDate)
-                .NotEmpty().WithMessage("La fecha de finalización es obligatoria")
-                .GreaterThan(x => x.StartDate).WithMessage("La fecha de finalización debe ser posterior a la fecha de inicio");
+            //RuleFor(x => x.EndDate)
+            //    .NotEmpty().WithMessage("La fecha de finalización es obligatoria")
+            //    .GreaterThan(x => x.StartDate).WithMessage("La fecha de finalización debe ser posterior a la fecha de inicio");
             RuleFor(x => x.Address)
                 .MaximumLength(100).WithMessage("La dirección no puede exceder los 100 caracteres");
             RuleFor(x => x.Description)

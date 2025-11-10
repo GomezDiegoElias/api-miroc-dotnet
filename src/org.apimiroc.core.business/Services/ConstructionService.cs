@@ -68,7 +68,7 @@ namespace org.apimiroc.core.business.Services
                 Id = Construction.GenerateId(),
                 Name = request.Name,
                 StartDate = request.StartDate,
-                EndDate = request.EndDate,
+                EndDate = DateTime.Now,
                 Address = request.Address,
                 Description = request.Description,
                 ClientId = client.Id
