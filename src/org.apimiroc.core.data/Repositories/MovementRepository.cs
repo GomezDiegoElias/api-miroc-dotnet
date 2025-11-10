@@ -194,7 +194,11 @@ namespace org.apimiroc.core.data.Repositories
                 .SqlQueryRaw<TotalSummaryOfMovements>(
                     "EXEC getTotalSummaryOfMovements"
                 ).ToListAsync();
-            return result.FirstOrDefault() ?? new TotalSummaryOfMovements(0, 0, 0);
+            //return result.FirstOrDefault() ?? new TotalSummaryOfMovements(0, 0, 0);
+            return result.FirstOrDefault() is { } r
+                ? new TotalSummaryOfMovements(r.TotalIncome ?? 0, r.TotalExpense ?? 0, r.NetBalance ?? 0)
+                : new TotalSummaryOfMovements(0, 0, 0);
+
         }
     }
 }
