@@ -23,7 +23,7 @@ namespace org.apimiroc.app.Controllers
             _employeeService = employeeService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Employee")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindAllEmployees([FromQuery] EmployeeFilter filters)
         {
@@ -44,7 +44,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Employee")]
         [HttpGet("{dni:long}")]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindEmployeeByDni(long dni)
         {
@@ -53,7 +53,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Employee")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> FindEmployeeById(string id)
         {
@@ -62,7 +62,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanCREATE_Employee")]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> SaveEmployee([FromBody] EmployeeRequest request)
         {
@@ -81,7 +81,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Employee")]
         [HttpDelete("permanent/{dni:long}")]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> DeleteEmployee(long dni)
         {
@@ -91,7 +91,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado eliminado exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Employee")]
         [HttpDelete("{dni:long}")]
         public async Task<ActionResult<StandardResponse<EmployeeRequest>>> DeleteClientLogic(long dni)
         {
@@ -101,7 +101,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<EmployeeResponse>(true, "Empleado eliminado exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Employee")]
         [HttpPut("{dni:long}")]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> UpdateEmployee(
             [FromBody] EmployeeRequest request,
@@ -119,7 +119,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Employee")]
         [HttpPatch("{dni:long}")]
         public async Task<ActionResult<StandardResponse<EmployeeResponse>>> PartiallyUpdateEmployee(
             long dni,

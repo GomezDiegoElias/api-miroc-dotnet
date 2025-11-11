@@ -29,7 +29,7 @@ namespace org.apimiroc.core.data.Sedders
             await context.SaveChangesAsync();
 
             // Definir entidades y acciones
-            var entities = new[] { "User", "Client", "Employee", "Provider", "Construction", "Concept", "Movement" };
+            var entities = new[] { "User", "Role", "Client", "Employee", "Provider", "Construction", "Concept", "Movement" };
             var actions = new[] { "CREATE", "READ", "UPDATE", "DELETE" };
 
             foreach (var entity in entities)

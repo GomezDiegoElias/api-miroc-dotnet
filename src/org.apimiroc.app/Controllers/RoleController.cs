@@ -20,7 +20,7 @@ namespace org.apimiroc.app.Controllers
             _roleService = roleService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Role")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<object>>> GetRoles([FromQuery] bool includePermissions = false)
         {
@@ -40,7 +40,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Role")]
         [HttpPatch("{roleName}/permissions")]
         public async Task<IActionResult> UpdateRolePermissions(
             string roleName,

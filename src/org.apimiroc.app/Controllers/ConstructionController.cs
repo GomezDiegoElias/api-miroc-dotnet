@@ -27,7 +27,7 @@ namespace org.apimiroc.app.Controllers
 
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 1 - RELACIONES CON CLAVES UNICAS ░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v1/constructions")]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<ConstructionResponse>>>> FindAll([FromQuery] ConstructionFilter filters)
         {
@@ -52,6 +52,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanCREATE_Construction")]
         [HttpPost("api/v1/constructions")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> SaveConstruction(
             [FromBody] ConstructionRequest request
@@ -71,6 +72,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v1/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindByName(string name)
         {
@@ -79,7 +81,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción obtenida exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v1/constructions/id/{id}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> FindConstructionById(string id)
         {
@@ -88,7 +90,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción obtenida exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Construction")]
         [HttpPut("api/v1/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> UpdateConstruction(
             [FromBody] ConstructionRequest request,
@@ -109,7 +111,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Construction")]
         [HttpPatch("api/v1/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> PartiallyUpdateConstruction(
             string name,
@@ -148,7 +150,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Construction")]
         [HttpDelete("api/v1/constructions/permanent/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponse>>> DeleteConstruction(string name)
         {
@@ -158,7 +160,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponse>(true, "Construcción eliminada exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Construction")]
         [HttpDelete("api/v1/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionRequest>>> DeleteConstructionLogic(string name)
         {
@@ -171,7 +173,7 @@ namespace org.apimiroc.app.Controllers
 
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 2 - RELACIONES CON ID ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v2/constructions")]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<ConstructionResponseV2>>>> FindAllConstructionsV2([FromQuery] ConstructionFilter filters)
         {
@@ -196,7 +198,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v2/constructions/by-name/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> FindConstructionByNameV2(string name)
         {
@@ -205,7 +207,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción obtenida exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Construction")]
         [HttpGet("api/v2/constructions/{id}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> FindConstructionByIdV2(string id)
         {
@@ -214,7 +216,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción obtenida exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanCREATE_Construction")]
         [HttpPost("api/v2/constructions")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> SaveConstructionV2(
             [FromBody] ConstructionRequestV2 request
@@ -234,7 +236,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Construction")]
         [HttpPut("api/v2/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> UpdateConstructionV2(
             [FromBody] ConstructionRequestV2 request,
@@ -253,7 +255,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Construction")]
         [HttpPatch("api/v2/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> PartiallyUpdateConstructionV2(
             string name,
@@ -290,7 +292,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Construction")]
         [HttpDelete("api/v2/constructions/permanent/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionResponseV2>>> DeleteConstructionV2(string name)
         {
@@ -300,7 +302,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ConstructionResponseV2>(true, "Construcción eliminada exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Construction")]
         [HttpDelete("api/v2/constructions/{name}")]
         public async Task<ActionResult<StandardResponse<ConstructionRequestV2>>> DeleteConstructionLogicV2(string name)
         {

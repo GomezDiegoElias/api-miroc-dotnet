@@ -36,6 +36,7 @@ namespace org.apimiroc.app.Controllers
         //[Authorize] // Requiere autenticacion
         //[Authorize(Roles = "ADMIN")] // Requiere autenticacion y que tenga el rol de admin
         //[Authorize(Policy = "CanCREATE_Client")] // Requiere autenticacion y el permiso de crear cliente
+        [Authorize(Policy = "CanREAD_User")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<UserResponse>>>> GetAllUsers([FromQuery] UserFilter filter)
         {
@@ -67,7 +68,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(response);
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_User")]
         [HttpGet("{dni:long}")]
         public async Task<ActionResult<StandardResponse<UserResponse>>> GetUserByDni(long dni)
         {
@@ -76,8 +77,8 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<UserResponse>(true, "Usuario obtenido exitosamente", response));
         }
 
+        [Authorize(Policy = "CanCREATE_User")]
         [HttpPost]
-        [AllowAnonymous]
         public async Task<ActionResult<StandardResponse<UserResponse>>> CreateUser([FromBody] UserCreateRequest request)
         {
 
@@ -102,7 +103,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_User")]
         [HttpPut("{dni:long}")]
         public async Task<ActionResult<StandardResponse<UserResponse>>> UpdateUser(
             [FromBody] UserUpdateRequest request,
@@ -135,6 +136,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanUPDATE_User")]
         [HttpPatch("{dni:long}")]
         public async Task<ActionResult<StandardResponse<UserResponse>>> PartiallyUpdateUser(
             long dni,
