@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using org.apimiroc.app.Mappers;
@@ -22,6 +23,7 @@ namespace org.apimiroc.app.Controllers
             _service = service;
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v1/movements/summary")]
         public async Task<ActionResult<StandardResponse<TotalSummaryOfMovements>>> GetTotalSummary()
         {
@@ -37,6 +39,7 @@ namespace org.apimiroc.app.Controllers
 
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 1 - RELACIONES CON CLAVES UNICAS ░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v1/movements")]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<MovementResponse>>>> FindAll(
             [FromQuery] MovementFilter filters
@@ -65,6 +68,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanCREATE_Movement")]
         [HttpPost("api/v1/movements")]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> Save([FromBody] MovementRequest request)
         {
@@ -82,6 +86,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v1/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> GetByCode(int code)
         {
@@ -95,6 +100,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v1/movements/{id}")]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> GetById(string id)
         {
@@ -108,6 +114,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanUPDATE_Movement")]
         [HttpPut("api/v1/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> UpdateByCode(
             int code,
@@ -128,6 +135,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanUPDATE_Movement")]
         [HttpPatch("api/v1/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponse>>> UpdatePartialByCode(
             int code,
@@ -161,6 +169,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanDELETE_Movement")]
         [HttpDelete("api/v1/movements/{id}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteById(string id)
         {
@@ -174,6 +183,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanDELETE_Movement")]
         [HttpDelete("api/v1/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteByCode(int code)
         {
@@ -188,6 +198,8 @@ namespace org.apimiroc.app.Controllers
         }
 
         // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ENDPOINTS VERSION 2 - RELACIONES CON ID ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+        [Authorize(Policy = "CanCREATE_Movement")]
         [HttpPost("api/v2/movements")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> SaveV2(
             [FromBody] MovementRequestV2 request
@@ -207,6 +219,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v2/movements")]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<MovementResponseV2>>>> FindAllV2(
             [FromQuery] MovementFilter filters
@@ -235,6 +248,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v2/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> GetByCodeV2(int code)
         {
@@ -248,6 +262,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanREAD_Movement")]
         [HttpGet("api/v2/movements/{id}")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> GetByIdV2(string id)
         {
@@ -262,6 +277,7 @@ namespace org.apimiroc.app.Controllers
         }
 
         // UPDATE
+        [Authorize(Policy = "CanUPDATE_Movement")]
         [HttpPut("api/v2/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> UpdateByCodeV2(
             int code,
@@ -283,6 +299,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanUPDATE_Movement")]
         [HttpPatch("api/v2/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<MovementResponseV2>>> UpdatePartialByCodeV2(
             int code,
@@ -319,7 +336,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-
+        [Authorize(Policy = "CanDELETE_Movement")]
         [HttpDelete("api/v2/movements/{id}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteByIdV2(string id)
         {
@@ -333,6 +350,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanDELETE_Movement")]
         [HttpDelete("api/v2/movements/{code:int}")]
         public async Task<ActionResult<StandardResponse<object>>> DeleteByCodeV2(int code)
         {

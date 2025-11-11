@@ -24,7 +24,7 @@ namespace org.apimiroc.app.Controllers
             _clientService = clientService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Client")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<ClientResponse>>>> FindAllClients([FromQuery] ClientFilter filters)
         {
@@ -49,7 +49,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Client")]
         [HttpGet("{dni:long}")]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> FindClientByDni(long dni)
         {
@@ -58,7 +58,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Client")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> FindClientById(string id)
         {
@@ -67,7 +67,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanCREATE_Client")]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> CreatedClient(
             [FromBody] ClientRequest request
@@ -82,7 +82,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Client")]
         [HttpDelete("permanent/{dni:long}")]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> DeleteClient(long dni)
         {
@@ -92,7 +92,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ClientResponse>(true, "Cliente eliminado exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Client")]
         [HttpDelete("{dni:long}")]
         public async Task<ActionResult<StandardResponse<ClientRequest>>> DeleteClientLogic(long dni)
         {
@@ -103,7 +103,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Client")]
         [HttpPut("{dni:long}")]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> UpdateClient(
             [FromBody] ClientRequest request,
@@ -122,7 +122,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Client")]
         [HttpPatch("{dni:long}")]
         public async Task<ActionResult<StandardResponse<ClientResponse>>> PartiallyUpdateClient(
             long dni,

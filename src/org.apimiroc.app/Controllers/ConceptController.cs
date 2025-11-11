@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
 using org.apimiroc.core.shared.Dto.Filter;
@@ -20,6 +21,7 @@ namespace org.apimiroc.app.Controllers
             _service = service;
         }
 
+        [Authorize(Policy = "CanREAD_Concept")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<List<ConceptResponse>>>> GetAllConcepts([FromQuery] ConceptFilter filters)
         {
@@ -34,6 +36,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanCREATE_Concept")]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> CreateConcept([FromBody] ConceptRequest request)
         {
@@ -52,6 +55,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanREAD_Concept")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetById(int id)
         {
@@ -65,6 +69,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanREAD_Concept")]
         [HttpGet("by-name/{name}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetByName(string name)
         {
@@ -78,6 +83,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanREAD_Concept")]
         [HttpGet("by-type/{type}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> GetByType(string type)
         {
@@ -91,6 +97,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanDELETE_Concept")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> DeletedLogic(int id)
         {
@@ -104,6 +111,7 @@ namespace org.apimiroc.app.Controllers
             ));
         }
 
+        [Authorize(Policy = "CanUPDATE_Concept")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<StandardResponse<ConceptResponse>>> UpdateConcept(int id, [FromBody] ConceptRequest request)
         {

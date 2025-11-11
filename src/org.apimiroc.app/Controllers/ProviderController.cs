@@ -30,7 +30,7 @@ namespace org.apimiroc.app.Controllers
             _providerValidation = providerValidation;
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Provider")]
         [HttpGet]
         public async Task<ActionResult<StandardResponse<PaginatedResponse<ProviderResponse>>>> FindAllProviders([FromQuery] ProviderFilter filters)
         {
@@ -55,7 +55,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Provider")]
         [HttpGet("{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> FindProviderByCuit(long cuit)
         {
@@ -64,7 +64,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ProviderResponse>(true, "Proveedor obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanREAD_Provider")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> FindProviderById(string id)
         {
@@ -73,7 +73,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ProviderResponse>(true, "Proveedor obtenido exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanCREATE_Provider")]
         [HttpPost]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> CreatedProvider(
             [FromBody] ProviderRequest request
@@ -97,7 +97,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Provider")]
         [HttpDelete("permanent/{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> DeleteProvider(long cuit)
         {
@@ -107,7 +107,7 @@ namespace org.apimiroc.app.Controllers
             return Ok(new StandardResponse<ProviderResponse>(true, "Proveedor eliminado exitosamente", response));
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanDELETE_Provider")]
         [HttpDelete("{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderRequest>>> DeleteProviderLogic(long cuit)
         {
@@ -118,7 +118,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Provider")]
         [HttpPut("{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> UpdateProvider(
             [FromBody] ProviderRequest request,
@@ -146,7 +146,7 @@ namespace org.apimiroc.app.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Policy = "CanUPDATE_Provider")]
         [HttpPatch("{cuit:long}")]
         public async Task<ActionResult<StandardResponse<ProviderResponse>>> PartiallyUpdateProvider(
             long cuit,
