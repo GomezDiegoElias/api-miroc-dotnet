@@ -190,5 +190,18 @@ namespace org.apimiroc.app.Controllers
 
         }
 
+        [Authorize(Policy = "CanDELETE_User")]
+        [HttpDelete("{dni:long}")]
+        public async Task<ActionResult<StandardResponse<UserResponse>>> DeleteUser(long dni)
+        {
+            var deletedUser = await _userService.DeleteLogic(dni);
+            var response = UserMapper.ToResponse(deletedUser);
+            return Ok(new StandardResponse<UserResponse>(
+                Success: true,
+                Message: "Usuario eliminado exitosamente",
+                Data: response
+            ));
+        }
+
     }
 }
