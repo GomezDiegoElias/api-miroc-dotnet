@@ -23,9 +23,11 @@ namespace org.apimiroc.core.business.Services
             _roleRepository = roleRepository;
         }
 
-        public Task<User> DeleteLogic(long dni)
+        public async Task<User> DeleteLogic(long dni)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.FindByDni(dni)
+                ?? throw new UserNotFoundException($"Usuario con DNI '{dni}' no existe");
+            return await _userRepository.DeleteLogic(user.Dni);
         }
 
         public Task<User> DeletePermanent(long dni)
