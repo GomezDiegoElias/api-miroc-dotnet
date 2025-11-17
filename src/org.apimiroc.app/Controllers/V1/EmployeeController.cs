@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -9,11 +10,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/employees")]
-    public class EmployeeController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [ApiVersion("1.0")]
+    public class EmployeeController : ControllerBase
     {
 
         private readonly IEmployeeService _employeeService;

@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
@@ -8,6 +9,25 @@ using Serilog;
 using Serilog.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuracion de versionado de api
+// Configuracion minima para soportar versionado por query string, header y media type
+builder.Services.AddApiVersioning(opt =>
+{
+    opt.AssumeDefaultVersionWhenUnspecified = true; // Si no se especifica, usa la version por defecto
+    opt.ReportApiVersions = true; // Reporta las versiones soportadas en las respuestas
+    opt.DefaultApiVersion = new ApiVersion(1, 0); // Version por defecto 1.0
+    opt.ApiVersionReader = ApiVersionReader.Combine(
+        new QueryStringApiVersionReader("api-version"), // Lee version desde query string
+        new HeaderApiVersionReader("X-API-Version"),     // Lee version desde header
+        new MediaTypeApiVersionReader("ver")        // Lee version desde media type
+    );
+}).AddMvc()
+.AddApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV"; // Formato de grupo de version
+    setup.SubstituteApiVersionInUrl = true; // Sustituye version en URL
+});
 
 // Configuración de Serilog
 builder.Host.UseSerilog((context, services, configuration) =>

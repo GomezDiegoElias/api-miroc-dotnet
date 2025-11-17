@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Asp.Versioning;
+using Azure.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -11,11 +12,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/providers")]
-    public class ProviderController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [ApiVersion("1.0")]
+    public class ProviderController : ControllerBase
     {
 
         private readonly IProviderService _providerService;

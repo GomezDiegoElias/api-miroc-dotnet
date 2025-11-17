@@ -83,16 +83,16 @@ namespace org.apimiroc.core.business.Services
         {
 
             if (await _userRepository.FindByEmail(request.Email) != null)
-                throw new UserNotFoundException($"Error: Correo electronico '{request.Email}' ya existe");
+                throw new UserNotFoundException($"Correo electronico '{request.Email}' ya existe");
 
             if (await _userRepository.FindByDni(request.Dni) != null)
-                throw new UserNotFoundException($"Error: Numero de DNI '{request.Dni}' ya existe");
+                throw new UserNotFoundException($"Numero de DNI '{request.Dni}' ya existe");
 
             string salt = PasswordUtils.GenerateRandomSalt();
             string hashedPassword = PasswordUtils.HashPasswordWithSalt(request.Password, salt);
 
             var roleEntity = await _roleRepository.FindByName("PRESUPUESTISTA");
-            if (roleEntity == null) throw new RoleNotFoundException("Rol PRESUPUESTISTA no existe");
+            if (roleEntity == null) throw new RoleNotFoundException("PRESUPUESTISTA");
 
             var newUser = new User
             {

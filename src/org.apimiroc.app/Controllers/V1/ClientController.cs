@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +10,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/clients")]
-    public class ClientController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:ApiVersion}/[controller]s")]
+    [ApiVersion("1.0")]
+    public class ClientController : ControllerBase
     {
 
         private readonly IClientService _clientService;

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.core.business.Services.Imp;
@@ -6,11 +7,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/auth")]
-    public class AuthController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [ApiVersion("1.0")]
+    public class AuthController : ControllerBase
     {
 
         private readonly IAuthService _authService;

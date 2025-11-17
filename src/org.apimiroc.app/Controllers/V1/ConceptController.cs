@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using org.apimiroc.app.Mappers;
 using org.apimiroc.core.business.Services.Imp;
@@ -7,11 +8,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/concepts")]
-    public class ConceptController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:ApiVersion}/[controller]s")] 
+    [ApiVersion("1.0")]
+    public class ConceptController : ControllerBase
     {
 
         private readonly IConceptService _service;

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,15 @@ using org.apimiroc.core.shared.Dto.General;
 using org.apimiroc.core.shared.Dto.Request;
 using org.apimiroc.core.shared.Dto.Response;
 
-namespace org.apimiroc.app.Controllers
+namespace org.apimiroc.app.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/users")]
-    public class UserController : Controller
+    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [ApiVersion("1.0")]
+    public class UserController : ControllerBase
     {
 
         private readonly IUserService _userService;
@@ -84,13 +89,6 @@ namespace org.apimiroc.app.Controllers
 
             var validationResult = await _userCreateValidator.ValidateAsync(request);
 
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
-            }
-
             var newUser = await _userService.SaveCustomUser(request);
 
             var response = new StandardResponse<UserResponse>(
@@ -113,15 +111,6 @@ namespace org.apimiroc.app.Controllers
 
             var existingUser = await _userService.FindByDni(dni);
             if (existingUser == null) throw new UserNotFoundException(dni.ToString());
-
-            // Validar el request
-            var validationResult = await _userUpdateValidator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
-            }
 
             var userToUpdate = UserMapper.ToEntityForUpdate(request, existingUser);
 
@@ -163,14 +152,6 @@ namespace org.apimiroc.app.Controllers
                 var errors = string.Join("; ", modelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 var errorDetails = new ErrorDetails(400, "Error de validacion", HttpContext.Request.Path, errors);
                 return BadRequest(new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errorDetails));
-            }
-
-            var validationResult = await _userUpdateValidator.ValidateAsync(userToPatch);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = string.Join("; ", validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
-                var errors = new ErrorDetails(400, "Validacion fallida", HttpContext.Request.Path, validationErrors);
-                return new StandardResponse<UserResponse>(false, "Ah ocurrido un error", null, errors);
             }
 
             // Usa el mapper especifico para PATCH
